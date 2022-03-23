@@ -9,7 +9,16 @@ public class Booking {
   private String clientPhoneNumber;
   private int clientCount;
 
-  public Booking(String BookingId, String client, DayTrip dayTrip, LocalDate localDate, boolean isPaid, String clientEmail, String clientPhoneNumber, int clientCount) {
+  public Booking(
+    String BookingId,
+    String client,
+    DayTrip dayTrip,
+    LocalDate localDate,
+    boolean isPaid,
+    String clientEmail,
+    String clientPhoneNumber,
+    int clientCount
+  ) {
     this.BookingId = BookingId;
     this.client = client;
     this.dayTrip = dayTrip;
