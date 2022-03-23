@@ -1,0 +1,6 @@
+{
+  "java.project.referencedLibraries": {
+    "include": ["lib/**/*.jar", "junit-4.13.2.jar"],
+    "exclude": ["testing.jar"]
+  }
+}

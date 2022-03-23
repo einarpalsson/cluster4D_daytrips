@@ -1,4 +1,6 @@
-public Class DayTrip {
+package daytrips;
+
+public class DayTrip {
     private String tripName;
     /**
     Halda Áfram... */
