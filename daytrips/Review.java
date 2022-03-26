@@ -1,3 +1,5 @@
+package daytrips;
+
 public class Review {
 
   private int rating;

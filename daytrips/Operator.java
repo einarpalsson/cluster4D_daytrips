@@ -1,3 +1,5 @@
+package daytrips;
+
 public class Operator {
 
   private String operatorName;

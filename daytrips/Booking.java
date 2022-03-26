@@ -1,3 +1,5 @@
+package daytrips;
+
 public class Booking {
 
   private String BookingId;
