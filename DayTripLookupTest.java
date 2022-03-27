@@ -1,58 +1,37 @@
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
 import java.util.ArrayList;
+import java.util.Hashtable;
+
 
 public class DayTripLookupTest {
-    static DayTripMockUp[] fakeDayTrips = {
-        new DayTripMockUp("Flugferðin mikla", "Hafnarfjörður", 1, 500),
-        new DayTripMockUp("Klifrið hand Bjarna", "Akureyri", 5, 10),
-        new DayTripMockUp("Sálfræðimeðferð Döbbu", "Akureyri", 5, 10000),
-        new DayTripMockUp("Nördaheimsókn hjá Einari", "Akureyri", 3, 589),
-        new DayTripMockUp("Tölvuferð", "Reykjavík", 2, 5000)
-    };
+    private static DTController controller = new DTController();
 
-    static DayTripMockUp[] expectedDT = {
-        new DayTripMockUp("Klifrið hand Bjarna", "Akureyri", 5, 10),
-        new DayTripMockUp("Sálfræðimeðferð Döbbu", "Akureyri", 5, 10000),
-        new DayTripMockUp("Nördaheimsókn hjá Einari", "Akureyri", 3, 589),
-    };
+    @Test
+    public static void testDayTripLookupAtVik() {
+        Hashtable<String, String> params = new Hashtable<>();
+        String vik = "Vík í Mýrdal";
+        params.put("location", vik);
 
-    // Before
-    public void setUp() {
-
-    }
-    // After
-    public void tearDown() {
-
-    }
-
-    public static DayTripMockUp[] getAllDayTripMockUps() {
-        return fakeDayTrips;
-    }
-
-    // Test
-    public static void testDayTripLookupAtAkureyri() {
-        String akureyri = "Akureyri";
-        DayTripMockUp[] daytrips = getAllDayTripMockUps();
-
-        ArrayList<DayTripMockUp> withAkureyri = new ArrayList<>();
-
-        for (DayTripMockUp daytrip: daytrips) {
-            String dtLocation = daytrip.getLocation();
-            if (dtLocation == akureyri) {
-                withAkureyri.add(daytrip);
-            }
-        }
+        ArrayList<DT> daytrips = controller.getDaytrips(params);
         
-        withAkureyri.forEach(daytrip -> {
-            System.out.println("gekk upp"+ daytrip.getLocation() == akureyri);
-            // System.out.println(daytrip.getName() + " | " + daytrip.getLocation());
-        });
+        assertEquals(3, daytrips.size());
     }
-    // Test
-    public void testDayTripLookupFailure() {
 
+    @Test
+    public static void testDayTripLookupFailure() {
+        Hashtable<String, String> params = new Hashtable<>();
+        String vik = "Bolungarvík";
+        params.put("location", vik);
+
+        ArrayList<DT> daytrips = controller.getDaytrips(params);
+        
+        assertEquals(0, daytrips.size());
     }
 
     public static void main(String[] args) {
-        testDayTripLookupAtAkureyri();
+        testDayTripLookupAtVik();
+        testDayTripLookupFailure();
     }
 }

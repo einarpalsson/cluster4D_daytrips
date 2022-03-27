@@ -1,7 +1,7 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class DayTrip {
+public class DT {
   private String tripName;
   private LocalDate date;
   private LocalDateTime timeStart;
@@ -10,11 +10,11 @@ public class DayTrip {
   private String description;
   private int ageLimit;
   private double price;
-  private Operator Operator;
+  private int operatorID;
   private String location;
   private int capacity;
 
-  public DayTrip(
+  public DT(
     String tripName,
     LocalDate date,
     LocalDateTime timeStart,
@@ -23,7 +23,7 @@ public class DayTrip {
     String description,
     int ageLimit,
     double price,
-    Operator Operator,
+    int operatorID,
     String location,
     int capacity
   ) {
@@ -35,7 +35,7 @@ public class DayTrip {
     this.description = description;
     this.ageLimit = ageLimit;
     this.price = price;
-    this.Operator = Operator;
+    this.operatorID = operatorID;
     this.location = location;
     this.capacity = capacity;
   }
@@ -104,12 +104,12 @@ public class DayTrip {
     this.price = price;
   }
 
-  public Operator getOperator() {
-    return this.Operator;
+  public int getOperator() {
+    return this.operatorID;
   }
 
-  public void setOperator(Operator Operator) {
-    this.Operator = Operator;
+  public void setOperator(int operatorID) {
+    this.operatorID = operatorID;
   }
 
   public String getLocation() {
