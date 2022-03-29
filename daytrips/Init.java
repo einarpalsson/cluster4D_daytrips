@@ -1,5 +1,3 @@
-package daytrips;
-
 import java.sql.Connection;
 import java.io.File;
 import java.io.IOException;
@@ -15,8 +13,8 @@ public class Init {
      * @throws IOException
      */
     public static void init() throws IOException {
-        String SQL_PATH = "daytrips/schema.sql";
-        String DB_PATH = "daytrips/daytrips.db";
+        String SQL_PATH = "schema.sql";
+        String DB_PATH = "daytrips.db";
         try {
             File db = new File(DB_PATH);
             if (db.createNewFile())
@@ -29,15 +27,21 @@ public class Init {
             System.err.println(err);
         }
 
-        Class.forName("org.sqlite.JDBC");
+
+        
         try {
             File sql = new File(SQL_PATH);
             if (!sql.exists()) {
                 System.out.println("No schema found.");
                 System.exit(0);
             }
-
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DB_PATH);
+            try {
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException err) {
+                System.err.println(err);
+            }
+            String connectionUrl = "jdbc:sqlite:" + DB_PATH;
+            Connection connection = DriverManager.getConnection(connectionUrl);
             Statement statement = connection.createStatement();
 
             Scanner read = new Scanner(sql);
@@ -49,16 +53,9 @@ public class Init {
                 statement.execute(command);
             }
             read.close();
-
+            connection.close();
         } catch (SQLException err) {
             System.err.println(err.getMessage());
-        } finally {
-            try {
-                if (connection != null)
-                    connection.close();
-            } catch (SQLException err) {
-                System.err.println(err);
-            }
         }
     }
 
