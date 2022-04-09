@@ -1,11 +1,19 @@
 package daytrips;
 import javax.sql.*;
-import java.sql.*;
+import javax.sql.rowset.CachedRowSet;
+import javax.sql.rowset.RowSetFactory;
+import javax.sql.rowset.RowSetProvider;
+import java.sql.PreparedStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.io.File;
 
 public class Query {
-  private static final String DB_URL = 'eitthvað';
+  private static final String DB_URL = "daytrips.db";
 
   private static Connection connect() throws ClassNotFoundException {
         Class.forName("org.sqlite.JDBC");

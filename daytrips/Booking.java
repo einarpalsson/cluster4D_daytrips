@@ -1,7 +1,7 @@
 package daytrips;
+import java.time.LocalDate;    
 
 public class Booking {
-
   private String BookingId;
   private String client;
   private DayTrip dayTrip;

@@ -1,4 +1,7 @@
 package daytrips;
+import java.util.ArrayList;
+import java.sql.SQLException;
+import javax.sql.rowset.CachedRowSet;
 
 class DayTripController {
 
@@ -8,15 +11,13 @@ class DayTripController {
 
     try {
       CachedRowSet res = Query.query(query);
-      while (crs.next()) {
-        daytrips.add(
+      while (res.next()) {
+        /*daytrips.add(
           new DayTrip(
-            crs.getString("Name"),
-            /**
-            BLABLABLA... */
-
+            res.getString("Name")
           )
         );
+        */
       }
     } catch (SQLException err) {
       System.err.println(err);
@@ -24,10 +25,11 @@ class DayTripController {
     return daytrips;
   }
 
-  public DayTrip[] getDayTrip(String params) {
+  public ArrayList<DayTrip>  getDayTrip(String params) {
     if (params.trim().equals("")) {
       return getDayTrip();
     }
+    return null;
     /**
     Decode parameters... */
   }

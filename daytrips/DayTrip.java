@@ -1,3 +1,4 @@
+package daytrips;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -10,7 +11,7 @@ public class DayTrip {
   private String description;
   private int ageLimit;
   private double price;
-  private Operator Operator;
+  private String Operator;
   private String location;
   private int capacity;
 
@@ -23,7 +24,7 @@ public class DayTrip {
     String description,
     int ageLimit,
     double price,
-    Operator Operator,
+    String Operator,
     String location,
     int capacity
   ) {
@@ -104,11 +105,11 @@ public class DayTrip {
     this.price = price;
   }
 
-  public Operator getOperator() {
+  public String getOperator() {
     return this.Operator;
   }
 
-  public void setOperator(Operator Operator) {
+  public void setOperator(String Operator) {
     this.Operator = Operator;
   }
 

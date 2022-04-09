@@ -1,3 +1,5 @@
+package daytrips;
+
 import java.sql.Connection;
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +15,8 @@ public class Init {
      * @throws IOException
      */
     public static void init() throws IOException {
-        String SQL_PATH = "schema.sql";
-        String DB_PATH = "daytrips.db";
+        String SQL_PATH = "daytrips" + File.separator + "schema.sql";;
+        String DB_PATH = "daytrips" + File.separator + "daytrips.db";
         try {
             File db = new File(DB_PATH);
             if (db.createNewFile())
