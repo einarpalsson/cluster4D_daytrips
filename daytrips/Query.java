@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.io.File;
 
 public class Query {
-  private static final String DB_URL = "daytrips.db";
+  private static final String DB_URL = "daytrips" + File.separator + "daytrips.db";
+
 
   private static Connection connect() throws ClassNotFoundException {
         Class.forName("org.sqlite.JDBC");
