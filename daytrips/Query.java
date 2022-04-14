@@ -1,4 +1,4 @@
-// package daytrips;
+package daytrips;
 import javax.sql.*;
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetFactory;

@@ -1,4 +1,4 @@
-// package daytrips;
+package daytrips;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -67,13 +67,13 @@ class DayTripController {
 
   public static ArrayList<DayTrip> getDayTrips(Hashtable<String, Object> params) {
 
-    // KALLA HÉR Á SQL CONTROLLER MEÐ KALLI Á QueryParser
+    // KALLA HER A SQL CONTROLLER MED KALLI A QueryParser
     // DÆMI: return runQuery(queryParser(params));
 
-    // runQuery hér tæki við streng sem keyrir select skipunina sem er returnað úr 
-    // QueryParser fallinu. runQuery væri fall sem returnar alltaf ArrayList af 
-    // Því sem kemur úr gagnagrunninum. Hér væri þá hægt að gera check sem ATH hvort
-    // Arraylist sé tómur og skila null í því tilfelli
+    // runQuery hér taeki vid streng sem keyrir select skipunina sem er returnad ur 
+    // QueryParser fallinu. runQuery vaeri fall sem returnar alltaf ArrayList af 
+    // thvi sem kemur ur gagnagrunninum. Her vaeri þa haegt að gera check sem ATH hvort
+    // Arraylist se tomur og skila null i thvi tilfelli
 
     // if (params.trim().equals("")) {
     //   return getDayTrip();
@@ -86,7 +86,7 @@ class DayTripController {
 
   public static void main(String[] args) {
     Hashtable<String, Object> params = new Hashtable<>();
-    params.put("difficulty", true);
+    params.put("difficulty", 3);
     params.put("capacity", 5);
 
     getDayTrips(params);
