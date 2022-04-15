@@ -43,7 +43,7 @@ public class Booking {
     return this.dayTripId;
   }
 
-  public LocalDate getdate() {
+  public LocalDate getDate() {
     return this.date;
   }
 
