@@ -35,7 +35,7 @@ public class Booking {
     return this.bookingId;
   }
 
-  public String getClient() {
+  public String getClientSSN() {
     return this.clientSSN;
   }
 

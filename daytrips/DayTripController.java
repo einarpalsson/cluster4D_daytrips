@@ -111,17 +111,18 @@ class DayTripController {
     try {
       while (res.next()) {
         daytrips.add(new DayTrip(
-          res.getString("Name"),
-          LocalDate.parse(res.getString("Date")),
-          LocalDateTime.parse(res.getString("TimeStart"), format),
-          LocalDateTime.parse(res.getString("TimeEnd"), format),
-          res.getInt("Difficulty"),
-          res.getString("Description"),
-          res.getInt("AgeLimit"),
-          res.getDouble("Price"),
-          res.getString("Operator"),
-          res.getString("Location"),
-          res.getInt("Capacity")
+          res.getString("dayTripId"),
+          res.getString("name"),
+          res.getDouble("price"),
+          res.getString("description"),
+          res.getString("location"),
+          LocalDate.parse(res.getString("date")),
+          LocalDateTime.parse(res.getString("timeStart"), format),
+          LocalDateTime.parse(res.getString("timeEnd"), format),
+          res.getInt("ageLimit"),
+          res.getInt("difficulty"),
+          res.getInt("capacity"),
+          res.getString("operatorId")
         ));
       }
     } catch (Exception e) {
@@ -129,7 +130,7 @@ class DayTripController {
     }
 
     for (DayTrip dt: daytrips) {
-      System.out.println(dt.getTripName() + " | " + dt.getDate().toString());
+      System.out.println(dt.getName() + " | " + dt.getDate().toString());
     }
 
     return daytrips;
@@ -145,40 +146,40 @@ class DayTripController {
    * @return  booking id for lookup in database.
    */
   public static String bookDayTrip(
-    DayTrip dayTrip, 
     String clientSSN, 
     String clientEmail,
     String clientPhoneNumber,
     int clientCount, 
-    Boolean isPaid) {
+    Boolean isPaid,
+    String dayTripId) {
       UUID bookingID = UUID.randomUUID();
       System.out.println(bookingID);
 
 
       Booking b = new Booking(
-        bookingID, 
+        bookingID.toString(), 
         clientSSN, 
         clientEmail, 
         clientPhoneNumber, 
         clientCount,
-        dayTrip, 
-        dayTrip.getDate(), 
-        isPaid
+        LocalDate.now(), 
+        isPaid,
+        dayTripId
         );
       
-        String query = "insert into booking(ID, Client, DayTrip, Date, IsPaid, ClientEmail, ClientPhoneNumber, ClientCount) "
-          + "values(?, ?, ?, ?, ?, ?, ?, ?);";
+        String query = "insert into booking(bookingId, clientSSN, clientEmail, Date, clientPhoneNumber, clientCount, date, isPaid, dayTripId) "
+          + "values(?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         ArrayList<String> values = new ArrayList<>();
         
         values.add(b.getBookingId().toString());
-        values.add(b.getClient());
-        values.add(b.getDayTrip().getTripName());
-        values.add(b.getLocalDate().toString());
-        values.add(String.valueOf(b.isPaid()));
+        values.add(b.getClientSSN());
         values.add(b.getClientEmail());
         values.add(b.getClientPhoneNumber());
         values.add(Integer.toString(b.getClientCount()));
+        values.add(b.getDate().toString());
+        values.add(String.valueOf(b.isPaid()));
+        values.add(b.getDayTripId());
         for(String s: values) System.out.println(s);
 
         try {
@@ -207,19 +208,7 @@ class DayTripController {
     LocalDate ld = LocalDate.now();
     LocalDateTime ldt1 = LocalDateTime.of(2022, 6, 12, 20, 00);
     LocalDateTime ldt2 = LocalDateTime.of(2022, 6, 12, 22, 00);
-    DayTrip d = new DayTrip(
-      "Frostahlaup",
-       ld,
-        ldt1,
-         ldt2,
-          2,
-           "Bara gaman",
-            12,
-             3000,
-              "Ævintýraferðir",
-               "Vík í Mýrdal",
-                5);
     
-    bookDayTrip(d, "300321-2240", "frosti@iceman.is", "000-0000", 3, true);
+    bookDayTrip("300321-2240", "frosti@iceman.is", "000-0000", 3, true, "VNATAR UUID");
   }
 }
