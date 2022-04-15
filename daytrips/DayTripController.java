@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import javax.sql.rowset.CachedRowSet;
 
 class DayTripController {
+  private final static Set<String> DayTripParams = Set.of("Name", "Date", "TimeStart", "TimeEnd", "Difficulty", "Description", "AgeLimit", "Price", "Operator", "Location", "Capacity");
 
   static public ArrayList<DayTrip> getDayTrip() {
     DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -40,29 +41,47 @@ class DayTripController {
     return daytrips;
   }
 
-  public static String queryParser(Hashtable<String, Object> params) {
-    String q = "SELECT * FROM Daytrips";
+  public static boolean isDateArr(Object value) {
+    return value.getClass().isArray();
+  }
 
-    if (params.size() <= 0) {
-      return q + ";";
+  public static String queryParser(Hashtable<String, Object> params, String method, String initalQuery) {
+    switch(method) {
+      case "GET":
+        if (params.size() <= 0) {
+          return initalQuery + ";";
+        }
+        
+        initalQuery += " WHERE ";
+        Set<String> keys = params.keySet();
+
+        int i = 0;
+        for (String key : keys) {
+          Object value = params.get(key);
+          if (DayTripParams.contains(key)) {
+            i++;
+            if (key.contains("Date") && isDateArr(value)) {
+              LocalDate[] d = (LocalDate[]) value;
+              initalQuery += key + " >= '" + d[0] + "' AND " + key + " <= '" + d[1] + "'";
+              initalQuery += i < keys.size() ? " AND " : ";";
+              continue;
+            }
+
+            initalQuery += key + " = '" + value + "'";
+
+            initalQuery += i < keys.size() ? " AND " : ";";
+          }
+        }
+
+        return initalQuery;
+      case "POST":
+        System.out.println("POST yay");
+        break;
+      case "PATCH":
+        System.out.println("PATCH yay");
+        break;
     }
-    
-    q += " WHERE ";
-    Set<String> keys = params.keySet();
-
-    while (keys.iterator().hasNext()) {
-      q += keys.iterator().next() + " = " +  params.get(keys.iterator().next()) + " AND ";
-
-      keys.remove(keys.iterator().next());
-    }
-
-    String query = "";
-
-    if (keys.size() == 0) {
-      query = q.substring(0, q.length()-5) + ";";
-    }
-
-    return query;
+    return "yay";
   }
 
   public static ArrayList<DayTrip> getDayTrips(Hashtable<String, Object> params) {
@@ -78,16 +97,52 @@ class DayTripController {
     // if (params.trim().equals("")) {
     //   return getDayTrip();
     // }
-    System.out.println(queryParser(params));
-    return null;
+
+    String q = queryParser(params, "GET", "SELECT * FROM DAYTRIP");
+    System.out.println(q);
+    CachedRowSet res = Query.query(q);
+    ArrayList<DayTrip> daytrips = new ArrayList<DayTrip>();
+    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    try {
+      while (res.next()) {
+        daytrips.add(new DayTrip(
+          res.getString("Name"),
+          LocalDate.parse(res.getString("Date")),
+          LocalDateTime.parse(res.getString("TimeStart"), format),
+          LocalDateTime.parse(res.getString("TimeEnd"), format),
+          res.getInt("Difficulty"),
+          res.getString("Description"),
+          res.getInt("AgeLimit"),
+          res.getDouble("Price"),
+          res.getString("Operator"),
+          res.getString("Location"),
+          res.getInt("Capacity")
+        ));
+      }
+    } catch (Exception e) {
+      // Ignore
+    }
+
+    for (DayTrip dt: daytrips) {
+      System.out.println(dt.getTripName() + " | " + dt.getDate().toString());
+    }
+
+    return daytrips;
     /**
      Decode parameters... */
   }
 
   public static void main(String[] args) {
     Hashtable<String, Object> params = new Hashtable<>();
-    params.put("difficulty", 3);
-    params.put("capacity", 5);
+
+    LocalDate d1 = LocalDate.of(2022, 5, 1);
+    LocalDate d2 = LocalDate.of(2022, 6, 3);
+    LocalDate[] dates = {d1, d2};
+
+    // params.put("Difficulty", 2);
+    params.put("Date", dates);
+    // params.put("Date", d1);
 
     getDayTrips(params);
   }
