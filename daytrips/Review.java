@@ -6,61 +6,41 @@ public class Review {
 
   private int rating;
   private String review;
-  private LocalDate timeStamp;
-  private String client;
-  private String tripName;
+  private LocalDate date;
+  private String clientSSN;
+  private String dayTripId;
 
   public Review(
     int rating,
     String review,
-    LocalDate timeStamp,
-    String client,
-    String tripName
+    LocalDate date,
+    String clientSSN,
+    String dayTripId
   ) {
     this.rating = rating;
     this.review = review;
-    this.timeStamp = timeStamp;
-    this.client = client;
-    this.tripName = tripName;
+    this.date = date;
+    this.clientSSN = clientSSN;
+    this.dayTripId = dayTripId;
   }
 
   public int getRating() {
     return this.rating;
   }
 
-  public void setRating(int rating) {
-    this.rating = rating;
-  }
-
   public String getReview() {
     return this.review;
   }
 
-  public void setReview(String review) {
-    this.review = review;
+  public LocalDate getDate() {
+    return this.date;
   }
 
-  public LocalDate getTimeStamp() {
-    return this.timeStamp;
+  public String getClientSSN() {
+    return this.clientSSN;
   }
 
-  public void setTimeStamp(LocalDate timeStamp) {
-    this.timeStamp = timeStamp;
-  }
-
-  public String getClient() {
-    return this.client;
-  }
-
-  public void setClient(String client) {
-    this.client = client;
-  }
-
-  public String getTripName() {
-    return this.tripName;
-  }
-
-  public void setTripName(String tripName) {
-    this.tripName = tripName;
+  public String getDayTripId() {
+    return this.dayTripId;
   }
 }

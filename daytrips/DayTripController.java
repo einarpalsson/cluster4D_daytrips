@@ -15,35 +15,35 @@ import javax.sql.rowset.CachedRowSet;
 class DayTripController {
   private final static Set<String> DayTripParams = Set.of("Name", "Date", "TimeStart", "TimeEnd", "Difficulty", "Description", "AgeLimit", "Price", "Operator", "Location", "Capacity");
 
-  static public ArrayList<DayTrip> getDayTrip() {
-    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    String query = "SELECT * FROM DAYTRIP";
-    ArrayList<DayTrip> daytrips = new ArrayList<DayTrip>();
+  // static public ArrayList<DayTrip> getDayTrip() {
+  //   DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+  //   String query = "SELECT * FROM DAYTRIP";
+  //   ArrayList<DayTrip> daytrips = new ArrayList<DayTrip>();
 
-    try {
-      CachedRowSet res = Query.query(query);
-      while (res.next()) {
-        daytrips.add(
-                new DayTrip(
-                        res.getString("Name"),
-                        LocalDate.parse(res.getString("Date")),
-                        LocalDateTime.parse(res.getString("TimeStart"), format),
-                        LocalDateTime.parse(res.getString("TimeEnd"), format),
-                        res.getInt("Difficulty"),
-                        res.getString("Description"),
-                        res.getInt("AgeLimit"),
-                        res.getDouble("Price"),
-                        res.getString("Operator"),
-                        res.getString("Location"),
-                        res.getInt("Capacity")
-                )
-        );
-      }
-    } catch (SQLException err) {
-      System.err.println(err);
-    }
-    return daytrips;
-  }
+  //   try {
+  //     CachedRowSet res = Query.query(query);
+  //     while (res.next()) {
+  //       daytrips.add(
+  //               new DayTrip(
+  //                       res.getString("Name"),
+  //                       LocalDate.parse(res.getString("Date")),
+  //                       LocalDateTime.parse(res.getString("TimeStart"), format),
+  //                       LocalDateTime.parse(res.getString("TimeEnd"), format),
+  //                       res.getInt("Difficulty"),
+  //                       res.getString("Description"),
+  //                       res.getInt("AgeLimit"),
+  //                       res.getDouble("Price"),
+  //                       res.getString("Operator"),
+  //                       res.getString("Location"),
+  //                       res.getInt("Capacity")
+  //               )
+  //       );
+  //     }
+  //   } catch (SQLException err) {
+  //     System.err.println(err);
+  //   }
+  //   return daytrips;
+  // }
 
   public static boolean isDateArr(Object value) {
     return value.getClass().isArray();

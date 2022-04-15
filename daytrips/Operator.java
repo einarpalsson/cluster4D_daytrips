@@ -1,38 +1,31 @@
 package daytrips;
 
 public class Operator {
-
-  private String operatorName;
+  private String operatorId;
+  private String name;
   private String location;
   private String phoneNo;
 
-  public Operator(String operatorName, String location, String phoneNo) {
-    this.operatorName = operatorName;
-    this.location = location;
+  public Operator(String operatorId, String name, String phoneNo, String location) {
+    this.operatorId = operatorId;
+    this.name = name;
     this.phoneNo = phoneNo;
+    this.location = location;
   }
 
-  public String getOperatorName() {
-    return this.operatorName;
+  public String getOperatorId() {
+    return operatorId;
   }
 
-  public void setOperatorName(String operatorName) {
-    this.operatorName = operatorName;
+  public String getName() {
+    return this.name;
   }
 
   public String getLocation() {
     return this.location;
   }
 
-  public void setLocation(String location) {
-    this.location = location;
-  }
-
   public String getPhoneNo() {
     return this.phoneNo;
-  }
-
-  public void setPhoneNo(String phoneNo) {
-    this.phoneNo = phoneNo;
   }
 }

@@ -1,47 +1,49 @@
 CREATE TABLE OPERATOR (
-    Name VARCHAR(32) NOT NULL COLLATE NOCASE
-    , Location VARCHAR(32)
-    , PhoneNo VARCHAR(32)
-    , PRIMARY KEY(Name)
+    operatorId VARCHAR(128) NOT NULL,
+    name VARCHAR(32) NOT NULL COLLATE NOCASE,
+    phoneNo VARCHAR(32),
+    location VARCHAR(32),
+    PRIMARY KEY(operatorId)
 );
 
 CREATE TABLE DAYTRIP (
-    Name VARCHAR(32) NOT NULL COLLATE NOCASE
-    , Date DATE NOT NULL
-    , TimeStart TIMESTAMP
-    , TimeEnd TIMESTAMP
-    , Difficulty INT
-    , Description VARCHAR(32)
-    , AgeLimit INT
-    , Price REAL(32)
-    , Operator VARCHAR(32)
-    , Location VARCHAR(32)
-    , Capacity INT
-    , PRIMARY KEY(Name)
-    , FOREIGN KEY(operator) REFERENCES OPERATOR(Name)
+    dayTripId VARCHAR(128) NOT NULL,
+    name VARCHAR(32) NOT NULL COLLATE NOCASE, 
+    price REAL(32), 
+    description VARCHAR(255), 
+    location VARCHAR(32), 
+    date DATE NOT NULL, 
+    timeStart TIMESTAMP, 
+    timeEnd TIMESTAMP, 
+    ageLimit INT, 
+    difficulty INT, 
+    capacity INT, 
+    operatorId VARCHAR(32), 
+    PRIMARY KEY(dayTripId), 
+    FOREIGN KEY(operatorId) REFERENCES OPERATOR(operatorId)
 );
 
 CREATE TABLE BOOKING (
-    ID VARCHAR(128) NOT NULL COLLATE NOCASE
-    , Client VARCHAR(32)
-    , DayTrip VARCHAR(32) 
-    , Date DATE NOT NULL
-    , IsPaid BOOLEAN
-    , ClientEmail VARCHAR(32)
-    , ClientPhoneNumber VARCHAR(32)
-    , ClientCount INT
-    , PRIMARY KEY(ID)
-    , FOREIGN KEY(DayTrip) REFERENCES DAYTRIP(Name)
+    bookingId VARCHAR(128) NOT NULL COLLATE NOCASE, 
+    clientSSN VARCHAR(10), 
+    clientEmail VARCHAR(32), 
+    clientPhoneNumber VARCHAR(32), 
+    clientCount INT, 
+    date DATE NOT NULL, 
+    isPaid BOOLEAN, 
+    dayTripId VARCHAR(128), 
+    PRIMARY KEY(bookingId), 
+    FOREIGN KEY(dayTripId) REFERENCES DAYTRIP(dayTripId)
 );
 
 CREATE TABLE REVIEW (
-    Rating INT(32) NOT NULL
-    , REVIEW VARCHAR (32)
-    , Date DATE NOT NULL
-    , Client VARCHAR (32)
-    , TripName VARCHAR (32)
-    , PRIMARY KEY(TripName) 
-    ,FOREIGN KEY (TripName) REFERENCES DAYTRIP(Name) 
+    rating INT NOT NULL CHECK(rating BETWEEN 1 AND 5), 
+    review VARCHAR(255), 
+    date DATE NOT NULL, 
+    clientSSN VARCHAR(10), 
+    dayTripId VARCHAR(128),
+    PRIMARY KEY(clientSSN, dayTripId),
+    FOREIGN KEY(clientSSN, dayTripId) REFERENCES BOOKING(clientSSN, dayTripId)
 );
 
 INSERT INTO OPERATOR VALUES('Ævintýraferðir','Vík í Mýrdal', '555-1234');
