@@ -64,7 +64,7 @@ public class Query {
         }
         return res;
     }
-  static CachedRowSet query(String sql, ArrayList<String> vals) {
+    static CachedRowSet query(String sql, ArrayList<String> vals) {
         Connection connection = null;
         PreparedStatement statement = null;
         CachedRowSet res = null;
@@ -92,4 +92,19 @@ public class Query {
         }
         return res;
     }
+
+    static void insert(String sql, ArrayList<String> vals) throws Exception {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        connection = connect();
+        statement = connection.prepareStatement(sql);
+
+        for (int i = 0; i < vals.size(); i++) {
+            statement.setString(i + 1, vals.get(i));
+        }
+
+        statement.executeUpdate();
+        close(connection, statement);
+}
 }

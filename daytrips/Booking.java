@@ -1,50 +1,51 @@
 package daytrips;
-import java.time.LocalDate;    
+import java.time.LocalDate;
+import java.util.UUID;    
 
 public class Booking {
-  private String BookingId;
-  private String client;
-  private DayTrip dayTrip;
-  private LocalDate localDate;
-  private boolean isPaid;
+  private UUID BookingId;
+  private String clientSSN;
   private String clientEmail;
   private String clientPhoneNumber;
   private int clientCount;
+  private DayTrip dayTrip;
+  private LocalDate localDate;
+  private boolean isPaid;
 
   public Booking(
-    String BookingId,
-    String client,
-    DayTrip dayTrip,
-    LocalDate localDate,
-    boolean isPaid,
+    UUID BookingId,
+    String clientSSN,
     String clientEmail,
     String clientPhoneNumber,
-    int clientCount
+    int clientCount,
+    DayTrip dayTrip,
+    LocalDate localDate,
+    boolean isPaid
   ) {
     this.BookingId = BookingId;
-    this.client = client;
+    this.clientSSN = clientSSN;
+    this.clientEmail = clientEmail;
+    this.clientPhoneNumber = clientPhoneNumber;
     this.dayTrip = dayTrip;
     this.localDate = localDate;
     this.isPaid = isPaid;
-    this.clientEmail = clientEmail;
-    this.clientPhoneNumber = clientPhoneNumber;
     this.clientCount = clientCount;
   }
 
-  public String getBookingId() {
+  public UUID getBookingId() {
     return this.BookingId;
   }
 
-  public void setBookingId(String BookingId) {
+  public void setBookingId(UUID BookingId) {
     this.BookingId = BookingId;
   }
 
   public String getClient() {
-    return this.client;
+    return this.clientSSN;
   }
 
   public void setClient(String client) {
-    this.client = client;
+    this.clientSSN = client;
   }
 
   public DayTrip getDayTrip() {

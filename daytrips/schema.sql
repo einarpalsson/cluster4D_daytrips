@@ -22,11 +22,11 @@ CREATE TABLE DAYTRIP (
 );
 
 CREATE TABLE BOOKING (
-    ID VARCHAR(32) NOT NULL COLLATE NOCASE
+    ID VARCHAR(128) NOT NULL COLLATE NOCASE
     , Client VARCHAR(32)
     , DayTrip VARCHAR(32) 
     , Date DATE NOT NULL
-    , IsPaid INT
+    , IsPaid BOOLEAN
     , ClientEmail VARCHAR(32)
     , ClientPhoneNumber VARCHAR(32)
     , ClientCount INT
@@ -37,7 +37,7 @@ CREATE TABLE BOOKING (
 CREATE TABLE REVIEW (
     Rating INT(32) NOT NULL
     , REVIEW VARCHAR (32)
-    , TimeStamp DATETIME
+    , Date DATE NOT NULL
     , Client VARCHAR (32)
     , TripName VARCHAR (32)
     , PRIMARY KEY(TripName) 
