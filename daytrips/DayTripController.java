@@ -16,7 +16,7 @@ import javax.sql.ConnectionEvent;
 import javax.sql.rowset.CachedRowSet;
 
 class DayTripController {
-  private final static String[] DayTripParams = {"dayTripId", "name", "price", "description", "location", "localCode", "date", "timeStart", "timeEnd", "ageLimit", "difficulty", "capacity", "operatorId"};
+  private final static String[] DayTripParams = {"dayTripId", "name", "price", "description", "location", "localCode", "date", "timeStart", "timeEnd", "ageLimit", "difficulty", "capacity", "oId"};
   private final static String[] BookingParams = {"bookingId", "clientSSN", "clientEmail", "clientPhoneNumber", "clientCount", "date", "isPaid", "dtId"};
   private final static String[] OperatorParams = {"operatorId", "name", "phoneNo", "location", "localCode"};
   private final static String[] ReviewParams = {"rating", "review", "date", "clientSSN", "dtId"};
@@ -48,7 +48,7 @@ class DayTripController {
             i++;
             if (key.contains("date") && isArr(value)) {
               LocalDate[] d = (LocalDate[]) value;
-              initalQuery += key + " >= '" + d[0] + "' AND " + key + " <= '" + d[1] + "'";
+              initalQuery += "(" + key + " >= '" + d[0] + "' AND " + key + " <= '" + d[1] + "')";
               initalQuery += i < keys.size() ? " AND " : ";";
               continue;
             }
@@ -56,10 +56,13 @@ class DayTripController {
             if (key.contains("difficulty")) {
               String [] diff = (String[]) value;
               int count = 0;
+              initalQuery += "(";
               for (String v : diff) {
-                initalQuery += key + " = '" + value + "'";
-                initalQuery += count < diff.length ? " AND " : "";
+                initalQuery += key + " = '" + v + "'";
+                initalQuery += count < diff.length-1 ? " OR " : "";
+                count++;
               }
+              initalQuery += ")";
               initalQuery += i < keys.size() ? " AND " : ";";
               continue;
             }
@@ -78,6 +81,7 @@ class DayTripController {
           i++;
           initalQuery += key;
           values += "?"; 
+          System.out.println("size:" + params.keySet().size() + " AND i: " + i);
 
           if (i < params.keySet().size()) {
             initalQuery += ", ";
@@ -97,7 +101,7 @@ class DayTripController {
 
   public static String createDayTrip(Hashtable<String, Object> params) {
     String daytripUUID = UUID.randomUUID().toString();
-    params.put("daytripId", daytripUUID);
+    params.put("dayTripId", daytripUUID);
     ArrayList<String> values = new ArrayList<>();
 
     String query = queryParser(params, "POST", "INSERT INTO DAYTRIP(", Arrays.asList(DayTripParams));
@@ -121,7 +125,6 @@ class DayTripController {
     System.out.println("QUERY ----> " + q);
     CachedRowSet res = Query.query(q);
     ArrayList<DayTrip> daytrips = new ArrayList<DayTrip>();
-    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     try {
       while (res.next()) {
@@ -133,8 +136,8 @@ class DayTripController {
           res.getString("location"),
           res.getInt("localCode"),
           LocalDate.parse(res.getString("date")),
-          LocalDateTime.parse(res.getString("timeStart"), format),
-          LocalDateTime.parse(res.getString("timeEnd"), format),
+          LocalDateTime.parse(res.getString("timeStart")),
+          LocalDateTime.parse(res.getString("timeEnd")),
           res.getInt("ageLimit"),
           res.getString("difficulty"),
           res.getInt("capacity"),
@@ -142,7 +145,7 @@ class DayTripController {
         ));
       }
     } catch (Exception e) {
-      // Ignore
+      System.out.println(e);
     }
 
     return daytrips;
@@ -273,7 +276,6 @@ class DayTripController {
   public static void main(String[] args) {
     // Búum til DayTrip
     Hashtable<String, Object> dtParams = new Hashtable<>();
-    dtParams.put("dayTripId", UUID.randomUUID().toString());
     dtParams.put("name", "Sviðasultusmakk");
     dtParams.put("price", 6500);
     dtParams.put("description", "Förum á milli bæja, skoðum dýrin og smökkum sviðasultu.");
@@ -282,21 +284,21 @@ class DayTripController {
     dtParams.put("date", LocalDate.of(2022, 5, 10));
     dtParams.put("timeStart", LocalDateTime.of(2022, 5, 10, 13, 00));
     dtParams.put("timeEnd", LocalDateTime.of(2022, 5, 10, 18, 00));
-    dtParams.put("ageLimit", 0);
-    dtParams.put("difficulty", 2);
+    dtParams.put("ageLimit", 15);
+    dtParams.put("difficulty", "Medium");
     dtParams.put("capacity", 15);
     dtParams.put("oId", "2a93cc1f-0b98-4110-95d2-b815667c8431");
     String testDayTripId = createDayTrip(dtParams);
 
-
     /* ---------------------------------------- */
     /* ----------- getDayTrips TEST ----------- */
     Hashtable<String, Object> getDayTripsParams = new Hashtable<>();
-    LocalDate[] dates = {LocalDate.of(2022, 5, 1), LocalDate.of(2022, 6, 3)};
+    LocalDate[] dates = {LocalDate.of(2022, 5, 1), LocalDate.of(2022, 5, 3)};
     getDayTripsParams.put("date", dates);
     String[] arr = {"Easy", "Medium"};
     getDayTripsParams.put("difficulty", arr);
     ArrayList<DayTrip> dts = getDayTrips(getDayTripsParams);
+    System.out.println("Daytrips size: " + dts.size());
     for (DayTrip d : dts) {
       System.out.println(d.getName() + " || " + d.getDifficulty());
     }
@@ -340,12 +342,12 @@ class DayTripController {
     /* ----------- getReviews TEST ----------- */
     ArrayList<Review> reviews = getReviews(new Hashtable<>());
     Hashtable<String, Object> testReview = new Hashtable<>();
-    bookDayTripParams.put("rating", 5);
-    bookDayTripParams.put("review", "Þetta var besti smókur sem ég hef á ævinni prófað.  Samt smá vont í hálsinn. Fimm stjörnur!");
-    bookDayTripParams.put("date", LocalDate.now());
-    bookDayTripParams.put("clientSSN", "300321-2240");
-    bookDayTripParams.put("dtId", testDayTripId);
-    bookDayTrip(bookDayTripParams);
+    testReview.put("rating", 5);
+    testReview.put("review", "Þetta var besti smókur sem ég hef á ævinni prófað.  Samt smá vont í hálsinn. Fimm stjörnur!");
+    testReview.put("date", LocalDate.now());
+    testReview.put("clientSSN", "300321-2240");
+    testReview.put("dtId", testDayTripId);
+    insertReview(testReview);
     for (Review r : reviews) {
       System.out.println(
         r.getRating() + " ||| " + 
