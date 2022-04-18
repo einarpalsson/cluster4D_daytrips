@@ -176,7 +176,7 @@ class DayTripController {
     } catch (Exception e) {
       System.out.println(e);
     }
-
+    EmailSender.sendConfirmationEmail(params);
     return bookingUUID;
   }
 
