@@ -21,10 +21,24 @@ class DayTripController {
   private final static String[] OperatorParams = {"operatorId", "name", "phoneNo", "location", "localCode"};
   private final static String[] ReviewParams = {"rating", "review", "date", "clientSSN", "dtId"};
 
+  /**
+   * Checks if the given object is an array
+   * @param value Boolean
+   * @return
+   */
   public static boolean isArr(Object value) {
     return value.getClass().isArray();
   }
 
+  /**
+   * Function that takes in parameters from the "frontend" and 
+   * parses the parameters into a SQL query.
+   * @param params Hashtable<String, Object>
+   * @param method String (GET, POST)
+   * @param initalQuery String
+   * @param sqlParams String[] in right order
+   * @return String SQL query
+   */
   public static String queryParser(
     Hashtable<String, Object> params,
     String method,
@@ -99,6 +113,14 @@ class DayTripController {
     return "ves";
   }
 
+  /**
+   * Creates a new daytrip from parameters. Must contain 
+   * all parameters needed for the object that's being created
+   * 
+   * See main() function for examples of usage.
+   * @param params
+   * @return the DayTripId thats generated in the function
+   */
   public static String createDayTrip(Hashtable<String, Object> params) {
     String daytripUUID = UUID.randomUUID().toString();
     params.put("dayTripId", daytripUUID);
@@ -120,6 +142,17 @@ class DayTripController {
     return daytripUUID;
   }
 
+  /**
+   * Function that fetches DayTrips from the database based
+   * on given parameters and returns them as an ArrayList
+   * of DayTrip objects.
+   * 
+   * Can have zero parameters, than it returns all DayTrips.
+   * 
+   * See main() function for examples of usage.
+   * @param params Hashtable<String, Object>
+   * @return Arraylist of DayTrip Objects.
+   */
   public static ArrayList<DayTrip> getDayTrips(Hashtable<String, Object> params) {
     String q = queryParser(params, "GET", "SELECT * FROM DAYTRIP", Arrays.asList(DayTripParams));
     System.out.println("QUERY ----> " + q);
@@ -183,6 +216,17 @@ class DayTripController {
     return bookingUUID;
   }
 
+  /**
+   * Function that fetches Bookings from the database based
+   * on given parameters and returns them as an ArrayList
+   * of Booking objects.
+   * 
+   * Can have zero parameters, than it returns all Bookings.
+   * 
+   * See main() function for examples of usage.
+   * @param params Hashtable<String, Object>
+   * @return Arraylist of Booking Objects.
+   */
   public static ArrayList<Booking> getBookings(Hashtable<String, Object> params) {
     String q = queryParser(params, "GET", "SELECT * FROM BOOKING", Arrays.asList(BookingParams));
     System.out.println(q);
@@ -210,6 +254,17 @@ class DayTripController {
     return bookings;
   }
 
+  /**
+   * Function that fetches Operators from the database based
+   * on given parameters and returns them as an ArrayList
+   * of Operator objects.
+   * 
+   * Can have zero parameters, than it returns all Operators.
+   * 
+   * See main() function for examples of usage.
+   * @param params Hashtable<String, Object>
+   * @return Arraylist of Operator Objects.
+   */
   public static ArrayList<Operator> getOperators(Hashtable<String, Object> params) {
     String q = queryParser(params, "GET", "SELECT * FROM OPERATOR", Arrays.asList(OperatorParams));
     // System.out.println("QUERY ----> " + q);
@@ -233,6 +288,17 @@ class DayTripController {
     return operators;
   }
 
+  /**
+   * Function that fetches Reviews from the database based
+   * on given parameters and returns them as an ArrayList
+   * of Review objects.
+   * 
+   * Can have zero parameters, than it returns all Reviews.
+   * 
+   * See main() function for examples of usage.
+   * @param params Hashtable<String, Object>
+   * @return Arraylist of Review Objects.
+   */
   public static ArrayList<Review> getReviews(Hashtable<String, Object> params) {
     String q = queryParser(params, "GET", "SELECT * FROM REVIEW", Arrays.asList(ReviewParams));
     // System.out.println("QUERY ----> " + q);
@@ -257,6 +323,15 @@ class DayTripController {
     return reviews;
   }
 
+  /**
+   * Creates a new review from parameters. Must contain 
+   * all parameters needed for the object that's being created
+   * Must contain all the information, most importantly 
+   * a clientSSN that already exists in the database and a daytripID
+   * 
+   * See main() function for examples of usage.
+   * @param params
+   */
   public static void insertReview(Hashtable<String, Object> params) {
     params.put("date", LocalDate.now().toString());
     ArrayList<String> values = new ArrayList<>();
