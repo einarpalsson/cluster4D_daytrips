@@ -382,7 +382,7 @@ class DayTripController {
     // /* ----------- bookDayTrip TEST ----------- */
     Hashtable<String, Object> bookDayTripParams = new Hashtable<>();
     bookDayTripParams.put("clientSSN", "300321-2240");
-    bookDayTripParams.put("clientEmail", "frosti@iceman.is");
+    bookDayTripParams.put("clientEmail", "oberen@inspauvila.cat");
     bookDayTripParams.put("clientPhoneNumber", "000-0000");
     bookDayTripParams.put("clientCount", 3);
     bookDayTripParams.put("isPaid", true);
