@@ -15,8 +15,17 @@ public class EmailSender extends TimerTask {
         t.scheduleAtFixedRate(email, new Date(date.getTime() + 24 * 60 * 60 * 1000), 86400000);
     }
 
+    private void sendEmail(Booking b) {
+        
+    }
+
     @Override
     public void run() {
-        
+        ArrayList<Booking> bookings = DayTripController.getBookings(new Hashtable<>());
+        for (Booking b: bookings) {
+            if (Period.between(b.getDate(), LocalDate.now()).getDays() <= 1) {
+                sendEmail(b);
+            }
+        }
     }
 }
