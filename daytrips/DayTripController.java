@@ -16,12 +16,12 @@ import javax.sql.ConnectionEvent;
 import javax.sql.rowset.CachedRowSet;
 
 class DayTripController {
-  private final static String[] DayTripParams = {"dayTripId", "name", "price", "description", "location", "date", "timeStart", "timeEnd", "ageLimit", "difficulty", "capacity", "operatorId"};
+  private final static String[] DayTripParams = {"dayTripId", "name", "price", "description", "location", "localCode", "date", "timeStart", "timeEnd", "ageLimit", "difficulty", "capacity", "operatorId"};
   private final static String[] BookingParams = {"bookingId", "clientSSN", "clientEmail", "clientPhoneNumber", "clientCount", "date", "isPaid", "dtId"};
   private final static String[] OperatorParams = {"operatorId", "name", "phoneNo", "location", "localCode"};
   private final static String[] ReviewParams = {"rating", "review", "date", "clientSSN", "dtId"};
 
-  public static boolean isDateArr(Object value) {
+  public static boolean isArr(Object value) {
     return value.getClass().isArray();
   }
 
@@ -46,9 +46,20 @@ class DayTripController {
           Object value = params.get(key);
           if (sqlParams.contains(key)) {
             i++;
-            if (key.contains("date") && isDateArr(value)) {
+            if (key.contains("date") && isArr(value)) {
               LocalDate[] d = (LocalDate[]) value;
               initalQuery += key + " >= '" + d[0] + "' AND " + key + " <= '" + d[1] + "'";
+              initalQuery += i < keys.size() ? " AND " : ";";
+              continue;
+            }
+
+            if (key.contains("difficulty")) {
+              String [] diff = (String[]) value;
+              int count = 0;
+              for (String v : diff) {
+                initalQuery += key + " = '" + value + "'";
+                initalQuery += count < diff.length ? " AND " : "";
+              }
               initalQuery += i < keys.size() ? " AND " : ";";
               continue;
             }
@@ -257,7 +268,6 @@ class DayTripController {
     } catch (Exception e) {
       System.out.println(e);
     }
-
   }
 
   public static void main(String[] args) {
@@ -283,10 +293,13 @@ class DayTripController {
     /* ----------- getDayTrips TEST ----------- */
     Hashtable<String, Object> getDayTripsParams = new Hashtable<>();
     LocalDate[] dates = {LocalDate.of(2022, 5, 1), LocalDate.of(2022, 6, 3)};
-    // getDayTripsParams.put("Difficulty", 2);
     getDayTripsParams.put("date", dates);
-    // getDayTripsParams.put("Date", d1);
-    getDayTrips(getDayTripsParams);
+    String[] arr = {"Easy", "Medium"};
+    getDayTripsParams.put("difficulty", arr);
+    ArrayList<DayTrip> dts = getDayTrips(getDayTripsParams);
+    for (DayTrip d : dts) {
+      System.out.println(d.getName() + " || " + d.getDifficulty());
+    }
 
     // /* ---------------------------------------- */
     // /* ----------- bookDayTrip TEST ----------- */
