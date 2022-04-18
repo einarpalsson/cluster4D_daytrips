@@ -17,9 +17,9 @@ import javax.sql.rowset.CachedRowSet;
 
 class DayTripController {
   private final static String[] DayTripParams = {"dayTripId", "name", "price", "description", "location", "date", "timeStart", "timeEnd", "ageLimit", "difficulty", "capacity", "operatorId"};
-  private final static String[] BookingParams = {"bookingId", "clientSSN", "clientEmail", "clientPhoneNumber", "clientCount", "date", "isPaid", "dayTripId"};
+  private final static String[] BookingParams = {"bookingId", "clientSSN", "clientEmail", "clientPhoneNumber", "clientCount", "date", "isPaid", "dtId"};
   private final static String[] OperatorParams = {"operatorId", "name", "phoneNo", "location", "localCode"};
-  private final static String[] ReviewParams = {"rating", "date", "phoneNo", "clientSSN", "dayTripId"};
+  private final static String[] ReviewParams = {"rating", "review", "date", "clientSSN", "dtId"};
 
   public static boolean isDateArr(Object value) {
     return value.getClass().isArray();
@@ -78,7 +78,7 @@ class DayTripController {
 
         return initalQuery;
       case "PATCH":
-        System.out.println("PATCH yay");
+        System.out.println("YE!");
         break;
     }
     return "ves";
@@ -159,6 +159,9 @@ class DayTripController {
       
     try {
       Query.insert(query, values);
+      Query.insert("UPDATE DAYTRIP SET capacity = capacity - " 
+        + params.get("clientCount").toString() + " WHERE dayTripId = '" 
+        + params.get("dtId").toString() + "';");
     } catch (Exception e) {
       System.out.println(e);
     }
@@ -182,7 +185,7 @@ class DayTripController {
           res.getInt("clientCount"),
           LocalDate.parse(res.getString("date")),
           Boolean.valueOf(res.getString("isPaid")),
-          res.getString("dayTripId")
+          res.getString("dtId")
         );
         bookings.add(b);
       }
@@ -195,7 +198,7 @@ class DayTripController {
 
   public static ArrayList<Operator> getOperators(Hashtable<String, Object> params) {
     String q = queryParser(params, "GET", "SELECT * FROM OPERATOR", Arrays.asList(OperatorParams));
-    System.out.println("QUERY ----> " + q);
+    // System.out.println("QUERY ----> " + q);
     CachedRowSet res = Query.query(q);
     ArrayList<Operator> operators = new ArrayList<Operator>();
 
@@ -218,9 +221,9 @@ class DayTripController {
 
   public static ArrayList<Review> getReviews(Hashtable<String, Object> params) {
     String q = queryParser(params, "GET", "SELECT * FROM REVIEW", Arrays.asList(ReviewParams));
-    System.out.println("QUERY ----> " + q);
+    // System.out.println("QUERY ----> " + q);
     CachedRowSet res = Query.query(q);
-    ArrayList<Operator> reviews = new ArrayList<Operator>();
+    ArrayList<Review> reviews = new ArrayList<Review>();
 
     try {
       while (res.next()) {
@@ -229,17 +232,36 @@ class DayTripController {
           res.getString("review"),
           LocalDate.parse(res.getString("date")),
           res.getString("clientSSN"),
-          res.getString("dayTripId"),
+          res.getString("dayTripId")
         ));
       }
     } catch (Exception e) {
-      // Ignore
+      System.out.println("getReviews......!");
+      System.out.println(e);
     }
 
     return reviews;
   }
 
   public static void main(String[] args) {
+    // Búum til DayTrip
+    Hashtable<String, Object> dtParams = new Hashtable<>();
+    dtParams.put("dayTripId", UUID.randomUUID().toString());
+    dtParams.put("name", "Sviðasultusmakk");
+    dtParams.put("price", 6500);
+    dtParams.put("description", "Förum á milli bæja, skoðum dýrin og smökkum sviðasultu.");
+    dtParams.put("location", "Neskaupsstaður");
+    dtParams.put("localCode", 5);
+    dtParams.put("date", LocalDate.of(2022, 5, 10));
+    dtParams.put("timeStart", LocalDateTime.of(2022, 5, 10, 13, 00));
+    dtParams.put("timeEnd", LocalDateTime.of(2022, 5, 10, 18, 00));
+    dtParams.put("ageLimit", 0);
+    dtParams.put("difficulty", 2);
+    dtParams.put("capacity", 15);
+    dtParams.put("oId", "2a93cc1f-0b98-4110-95d2-b815667c8431");
+    String testDayTripId = createDayTrip(dtParams);
+
+
     /* ---------------------------------------- */
     /* ----------- getDayTrips TEST ----------- */
     Hashtable<String, Object> getDayTripsParams = new Hashtable<>();
@@ -257,7 +279,7 @@ class DayTripController {
     bookDayTripParams.put("clientPhoneNumber", "000-0000");
     bookDayTripParams.put("clientCount", 3);
     bookDayTripParams.put("isPaid", true);
-    bookDayTripParams.put("dayTripId", "f2167055-02d8-4707-a355-80c3a69e051f");
+    bookDayTripParams.put("dtId", testDayTripId);
     bookDayTrip(bookDayTripParams);
 
     /* ---------------------------------------- */
@@ -284,7 +306,27 @@ class DayTripController {
       );
     }
 
-    ArrayList<Operator> ops = getOperators(new Hashtable<>());
-    System.out.println(ops.size());
+    /* ---------------------------------------- */
+    /* ----------- getReviews TEST ----------- */
+    ArrayList<Review> reviews = getReviews(new Hashtable<>());
+    Hashtable<String, Object> testReview = new Hashtable<>();
+    bookDayTripParams.put("rating", 5);
+    bookDayTripParams.put("review", "Þetta var besti smókur sem ég hef á ævinni prófað.  Samt smá vont í hálsinn. Fimm stjörnur!");
+    bookDayTripParams.put("date", LocalDate.now());
+    bookDayTripParams.put("clientSSN", "300321-2240");
+    bookDayTripParams.put("dtId", testDayTripId);
+    bookDayTrip(bookDayTripParams);
+    for (Review r : reviews) {
+      System.out.println(
+        r.getRating() + " ||| " + 
+        r.getReview() + " ||| " + 
+        r.getDate().toString() + " ||| " + 
+        r.getClientSSN() + " ||| " +
+        r.getDayTripId()
+      );
+    }
+
+    // ArrayList<Operator> ops = getOperators(new Hashtable<>());
+    // System.out.println(ops.size());
   }
 }

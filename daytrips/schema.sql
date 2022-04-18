@@ -44,9 +44,7 @@ CREATE TABLE REVIEW (
     date DATE NOT NULL, 
     clientSSN VARCHAR(10), 
     dtId VARCHAR(128),
-	bId VARCHAR(128),
-    PRIMARY KEY(dtId),
-    FOREIGN KEY(bId) REFERENCES BOOKING(bookingId),
+    PRIMARY KEY(dtId, clientSSN),
 	FOREIGN KEY(dtId) REFERENCES DAYTRIP(dayTripId)
 );
 
