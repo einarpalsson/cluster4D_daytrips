@@ -19,7 +19,7 @@ class DayTripController {
   private final static String[] DayTripParams = {"dayTripId", "name", "price", "description", "location", "date", "timeStart", "timeEnd", "ageLimit", "difficulty", "capacity", "operatorId"};
   private final static String[] BookingParams = {"bookingId", "clientSSN", "clientEmail", "clientPhoneNumber", "clientCount", "date", "isPaid", "dayTripId"};
   private final static String[] OperatorParams = {"operatorId", "name", "phoneNo", "location", "localCode"};
-  private final static String[] ReviewParams = {"rating", "date", "phoneNo", "clientSSN", "dayTripId"};
+  private final static String[] ReviewParams = {"rating", "review", "date", "clientSSN", "dayTripId", "bookingId"};
 
   public static boolean isDateArr(Object value) {
     return value.getClass().isArray();
@@ -237,6 +237,23 @@ class DayTripController {
     }
 
     return reviews;
+  }
+
+  public static void insertReview(Hashtable<String, Object> params) {
+    params.put("date", LocalDate.now().toString());
+    ArrayList<String> values = new ArrayList<>();
+    String query = queryParser(params, "POST", "INSERT INTO REVIEW(", Arrays.asList(ReviewParams));
+
+    for (String a: ReviewParams) {
+      values.add(params.get(a).toString());
+    }
+      
+    try {
+      Query.insert(query, values);
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+
   }
 
   public static void main(String[] args) {
