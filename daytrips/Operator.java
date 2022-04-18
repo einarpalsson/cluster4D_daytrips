@@ -13,7 +13,6 @@ public class Operator {
     this.phoneNo = phoneNo;
     this.location = location;
     this.localCode = localCode;
-
   }
 
   public String getOperatorId() {
@@ -30,5 +29,9 @@ public class Operator {
 
   public String getPhoneNo() {
     return this.phoneNo;
+  }
+
+  public int getLocalCode() {
+      return this.localCode;
   }
 }
