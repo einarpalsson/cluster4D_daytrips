@@ -243,6 +243,23 @@ class DayTripController {
     return reviews;
   }
 
+  public static void insertReview(Hashtable<String, Object> params) {
+    params.put("date", LocalDate.now().toString());
+    ArrayList<String> values = new ArrayList<>();
+    String query = queryParser(params, "POST", "INSERT INTO REVIEW(", Arrays.asList(ReviewParams));
+
+    for (String a: ReviewParams) {
+      values.add(params.get(a).toString());
+    }
+      
+    try {
+      Query.insert(query, values);
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+
+  }
+
   public static void main(String[] args) {
     // Búum til DayTrip
     Hashtable<String, Object> dtParams = new Hashtable<>();

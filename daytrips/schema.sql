@@ -43,9 +43,17 @@ CREATE TABLE REVIEW (
     review VARCHAR(255), 
     date DATE NOT NULL, 
     clientSSN VARCHAR(10), 
+<<<<<<< HEAD
     dtId VARCHAR(128),
     PRIMARY KEY(dtId, clientSSN),
 	FOREIGN KEY(dtId) REFERENCES DAYTRIP(dayTripId)
+=======
+    daytripId VARCHAR(128),
+	  bookingId VARCHAR(128),
+    PRIMARY KEY(dtId),
+    FOREIGN KEY(bId) REFERENCES BOOKING(bookingId),
+	  FOREIGN KEY(dtId) REFERENCES DAYTRIP(dayTripId)
+>>>>>>> 271ed2c238ba487a93157c2e20419cb67b82496c
 );
 
 INSERT INTO OPERATOR VALUES('7b6a30f4-d729-4398-9339-8c20a0d29157', 'Ævintýraferðir', '555-7895', 'Isafjörður', 1);
