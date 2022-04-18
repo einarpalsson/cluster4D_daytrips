@@ -19,6 +19,7 @@ class DayTripController {
   private final static String[] DayTripParams = {"dayTripId", "name", "price", "description", "location", "date", "timeStart", "timeEnd", "ageLimit", "difficulty", "capacity", "operatorId"};
   private final static String[] BookingParams = {"bookingId", "clientSSN", "clientEmail", "clientPhoneNumber", "clientCount", "date", "isPaid", "dayTripId"};
   private final static String[] OperatorParams = {"operatorId", "name", "phoneNo", "location", "localCode"};
+  private final static String[] ReviewParams = {"rating", "date", "phoneNo", "clientSSN", "dayTripId"};
 
   public static boolean isDateArr(Object value) {
     return value.getClass().isArray();
@@ -212,6 +213,29 @@ class DayTripController {
     }
 
     return operators;
+  }
+
+  public static ArrayList<Review> getReviews(Hashtable<String, Object> params) {
+    String q = queryParser(params, "GET", "SELECT * FROM REVIEW", Arrays.asList(ReviewParams));
+    System.out.println("QUERY ----> " + q);
+    CachedRowSet res = Query.query(q);
+    ArrayList<Operator> reviews = new ArrayList<Operator>();
+
+    try {
+      while (res.next()) {
+        reviews.add(new Review(
+          res.getInt("rating"),
+          res.getString("review"),
+          LocalDate.parse(res.getString("date")),
+          res.getString("clientSSN"),
+          res.getString("dayTripId"),
+        ));
+      }
+    } catch (Exception e) {
+      // Ignore
+    }
+
+    return reviews;
   }
 
   public static void main(String[] args) {
