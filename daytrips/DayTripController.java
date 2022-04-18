@@ -16,9 +16,9 @@ import javax.sql.ConnectionEvent;
 import javax.sql.rowset.CachedRowSet;
 
 class DayTripController {
-  private final static String[] DayTripParams = {"dayTripId", "name", "price", "description", "location", "date", "timeStart", "timeEnd", "ageLimit", "difficulty", "capacity", "operatorId"};
-  private final static String[] BookingParams = {"bookingId", "clientSSN", "clientEmail", "clientPhoneNumber", "clientCount", "date", "isPaid", "dayTripId"};
-  private final static String[] OperatorParams = {"operatorId", "name", "phoneNo", "location", "localCode"};
+  public final static String[] DayTripParams = {"dayTripId", "name", "price", "description", "location", "localCode", "date", "timeStart", "timeEnd", "ageLimit", "difficulty", "capacity", "oId"};
+  public final static String[] BookingParams = {"bookingId", "clientSSN", "clientEmail", "clientPhoneNumber", "clientCount", "date", "isPaid", "dayTripId"};
+  public final static String[] OperatorParams = {"operatorId", "name", "phoneNo", "location", "localCode"};
 
   public static boolean isDateArr(Object value) {
     return value.getClass().isArray();
@@ -119,13 +119,14 @@ class DayTripController {
           res.getDouble("price"),
           res.getString("description"),
           res.getString("location"),
+          res.getInt("localCode"),
           LocalDate.parse(res.getString("date")),
           LocalDateTime.parse(res.getString("timeStart"), format),
           LocalDateTime.parse(res.getString("timeEnd"), format),
           res.getInt("ageLimit"),
-          res.getInt("difficulty"),
+          res.getString("difficulty"),
           res.getInt("capacity"),
-          res.getString("operatorId")
+          res.getString("oId")
         ));
       }
     } catch (Exception e) {

@@ -106,5 +106,16 @@ public class Query {
 
         statement.executeUpdate();
         close(connection, statement);
-}
+    }
+
+    static void insert(String sql) throws Exception {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        connection = connect();
+        statement = connection.prepareStatement(sql);
+
+        statement.executeUpdate();
+        close(connection, statement);
+    }
 }

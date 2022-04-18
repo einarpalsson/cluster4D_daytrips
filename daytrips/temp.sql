@@ -1,6 +1,6 @@
 CREATE TABLE OPERATOR (
-    operatorId VARCHAR(128) NOT NULL UNIQUE,
-    name VARCHAR(32) NOT NULL,
+    operatorId VARCHAR(128) NOT NULL,
+    name VARCHAR(32) NOT NULL COLLATE NOCASE,
     phoneNo VARCHAR(32),
     location VARCHAR(32),
     localCode INT,
@@ -8,34 +8,33 @@ CREATE TABLE OPERATOR (
 );
 
 CREATE TABLE DAYTRIP (
-    dayTripId VARCHAR(128) NOT NULL UNIQUE,
-    name VARCHAR(32) NOT NULL, 
-    price FLOAT(32), 
+    dayTripId VARCHAR(128) NOT NULL,
+    name VARCHAR(32) NOT NULL COLLATE NOCASE, 
+    price REAL(32), 
     description VARCHAR(255), 
-    location VARCHAR(32),
-    localCode INT,
+    location VARCHAR(32), 
     date DATE NOT NULL, 
     timeStart TIMESTAMP, 
     timeEnd TIMESTAMP, 
     ageLimit INT, 
-    difficulty VARCHAR(10), 
+    difficulty INT, 
     capacity INT, 
-    oId VARCHAR(32), 
+    operatorId VARCHAR(32), 
     PRIMARY KEY(dayTripId), 
-    FOREIGN KEY(oId) REFERENCES OPERATOR(operatorId)
+    FOREIGN KEY(operatorId) REFERENCES OPERATOR(operatorId)
 );
 
 CREATE TABLE BOOKING (
-    bookingId VARCHAR(128) NOT NULL UNIQUE, 
+    bookingId VARCHAR(128) NOT NULL COLLATE NOCASE, 
     clientSSN VARCHAR(10), 
     clientEmail VARCHAR(32), 
     clientPhoneNumber VARCHAR(32), 
     clientCount INT, 
     date DATE NOT NULL, 
     isPaid BOOLEAN, 
-    dtId VARCHAR(128), 
+    dayTripId VARCHAR(128), 
     PRIMARY KEY(bookingId), 
-    FOREIGN KEY(dtId) REFERENCES DAYTRIP(dayTripId)
+    FOREIGN KEY(dayTripId) REFERENCES DAYTRIP(dayTripId)
 );
 
 CREATE TABLE REVIEW (
@@ -43,15 +42,13 @@ CREATE TABLE REVIEW (
     review VARCHAR(255), 
     date DATE NOT NULL, 
     clientSSN VARCHAR(10), 
-    dtId VARCHAR(128),
-	bId VARCHAR(128),
-    PRIMARY KEY(dtId),
-    FOREIGN KEY(bId) REFERENCES BOOKING(bookingId),
-	FOREIGN KEY(dtId) REFERENCES DAYTRIP(dayTripId)
+    dayTripId VARCHAR(128),
+    PRIMARY KEY(clientSSN, dayTripId),
+    FOREIGN KEY(clientSSN, dayTripId) REFERENCES BOOKING(clientSSN, dayTripId)
 );
 
-INSERT INTO OPERATOR VALUES('7b6a30f4-d729-4398-9339-8c20a0d29157', 'Ævintýraferðir', '555-7895', 'Isafjörður', 1);
-INSERT INTO OPERATOR VALUES('47d5af70-4ead-4fbf-8122-577fd12833ba', 'Hvalaskoðunin Lax', '565-6363', 'Isafjörður', 1);
+INSERT INTO OPERATOR VALUES('7b6a30f4-d729-4398-9339-8c20a0d29157', 'Ævintýraferðir', '555-7895', 'Ísafjörður', 1);
+INSERT INTO OPERATOR VALUES('47d5af70-4ead-4fbf-8122-577fd12833ba', 'Hvalaskoðunin Ýsa', '565-6363', 'Ísafjörður', 1);
 INSERT INTO OPERATOR VALUES('4faa5e47-030b-458e-94d1-f90b61d32e9e', 'Bjarnaferðir', '555-1234', 'Bolungarvík', 1);
 INSERT INTO OPERATOR VALUES('41d9c52e-6686-42b2-ad83-9f792b54524e', 'Icelandic Smoketrips', '589-8989', 'Reykjarfjörður', 1);
 INSERT INTO OPERATOR VALUES('ef4802f3-7065-4668-92ae-9ca75a1457e9', 'Country Tours', '500-1234', 'Stykkishólmur', 2);

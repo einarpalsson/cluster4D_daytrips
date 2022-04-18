@@ -9,11 +9,12 @@ public class DayTrip {
   private double price;
   private String description;
   private String location;
+  private int localCode;
   private LocalDate date;
   private LocalDateTime timeStart;
   private LocalDateTime timeEnd;
   private int ageLimit;
-  private int difficulty;
+  private String difficulty;
   private int capacity;
   private String operatorId;
 
@@ -23,11 +24,12 @@ public class DayTrip {
     double price,
     String description,
     String location,
+    int localCode,
     LocalDate date,
     LocalDateTime timeStart,
     LocalDateTime timeEnd,
     int ageLimit,
-    int difficulty,
+    String difficulty,
     int capacity,
     String operatorId
   ) {
@@ -36,6 +38,7 @@ public class DayTrip {
     this.price = price;
     this.description = description;
     this.location = location;
+    this.localCode = localCode;
     this.date = date;
     this.timeStart = timeStart;
     this.timeEnd = timeEnd;
@@ -46,7 +49,7 @@ public class DayTrip {
   }
 
   public String getDayTripId() {
-      return dayTripId;
+    return this.dayTripId;
   }
 
   public String getName() {
@@ -65,7 +68,7 @@ public class DayTrip {
     return this.timeEnd;
   }
 
-  public int getDifficulty() {
+  public String getDifficulty() {
     return this.difficulty;
   }
 
@@ -87,6 +90,10 @@ public class DayTrip {
 
   public String getLocation() {
     return this.location;
+  }
+
+  public int getLocalCode() {
+      return this.localCode;
   }
 
   public int getCapacity() {
