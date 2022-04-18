@@ -16,16 +16,10 @@ import javax.sql.ConnectionEvent;
 import javax.sql.rowset.CachedRowSet;
 
 class DayTripController {
-<<<<<<< HEAD
   private final static String[] DayTripParams = {"dayTripId", "name", "price", "description", "location", "date", "timeStart", "timeEnd", "ageLimit", "difficulty", "capacity", "operatorId"};
   private final static String[] BookingParams = {"bookingId", "clientSSN", "clientEmail", "clientPhoneNumber", "clientCount", "date", "isPaid", "dayTripId"};
   private final static String[] OperatorParams = {"operatorId", "name", "phoneNo", "location", "localCode"};
   private final static String[] ReviewParams = {"rating", "date", "phoneNo", "clientSSN", "dayTripId"};
-=======
-  public final static String[] DayTripParams = {"dayTripId", "name", "price", "description", "location", "localCode", "date", "timeStart", "timeEnd", "ageLimit", "difficulty", "capacity", "oId"};
-  public final static String[] BookingParams = {"bookingId", "clientSSN", "clientEmail", "clientPhoneNumber", "clientCount", "date", "isPaid", "dayTripId"};
-  public final static String[] OperatorParams = {"operatorId", "name", "phoneNo", "location", "localCode"};
->>>>>>> 2ab2cd919e91c5ea11bc79ac898c2d0bb2502fca
 
   public static boolean isDateArr(Object value) {
     return value.getClass().isArray();
