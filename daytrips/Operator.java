@@ -3,14 +3,17 @@ package daytrips;
 public class Operator {
   private String operatorId;
   private String name;
-  private String location;
   private String phoneNo;
+  private String location;
+  private int localCode;
 
-  public Operator(String operatorId, String name, String phoneNo, String location) {
+  public Operator(String operatorId, String name, String phoneNo, String location, int localCode) {
     this.operatorId = operatorId;
     this.name = name;
     this.phoneNo = phoneNo;
     this.location = location;
+    this.localCode = localCode;
+
   }
 
   public String getOperatorId() {

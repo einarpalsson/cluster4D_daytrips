@@ -3,6 +3,7 @@ CREATE TABLE OPERATOR (
     name VARCHAR(32) NOT NULL COLLATE NOCASE,
     phoneNo VARCHAR(32),
     location VARCHAR(32),
+    localCode INT,
     PRIMARY KEY(operatorId)
 );
 
@@ -46,28 +47,25 @@ CREATE TABLE REVIEW (
     FOREIGN KEY(clientSSN, dayTripId) REFERENCES BOOKING(clientSSN, dayTripId)
 );
 
-INSERT INTO OPERATOR VALUES('16145a87-a62a-469d-b81b-19c6177b2018','Ævintýraferðir','Vík í Mýrdal', '555-1234');
-INSERT INTO OPERATOR VALUES('2ae6c012-b639-4cd8-81c6-88ee4edf5169', 'Arctic Adventures', '555-0000','Akureyri');
-INSERT INTO OPERATOR VALUES('e7d0b4c0-93e8-432b-9d19-6ec0f056ee90', 'Iceland Travels', '521-2630','Reykjavík');
-INSERT INTO OPERATOR VALUES('08e9604b-97b8-4bc9-b17c-95b4a9a2400e', 'Iceland Excursions', '567-8910','Akureyri');
-INSERT INTO OPERATOR VALUES('d5aa025b-fea2-4c9c-ad0b-6a497fc4edc0', 'All around tours', '555-2345','Reykjavík');
-INSERT INTO OPERATOR VALUES('55a44c80-b5ee-4725-bd35-860f498ee2ed', 'Country Tours', '500-1234','Vík í Mýrdal');
-
-INSERT INTO DAYTRIP VALUES('23c8e048-ecc6-45a4-acec-2e01ef352f0a', 'Jöklaferð', 5000, 'Jöklaferð uppá Vatnajökul','Vík í Mýrdal',DATE('2022-05-01'), DATETIME('2022-05-01 09:00:00'), DATETIME('2022-05-01 12:00:00'),  10, 3, 10, 'Ævintýraferðir');
-INSERT INTO DAYTRIP VALUES('0734277a-d6af-4578-aa89-fc3c1ba9e03c', 'Hestatúr', 7000, '5 klst reiðferð um sveitina','Vík í Mýrdal',DATE('2022-07-15'), DATETIME('2022-07-15 12:00:00'), DATETIME('2022-07-15 17:00:00'),  10, 1, 15, 'Ævintýraferðir');
-INSERT INTO DAYTRIP VALUES('662b1aa3-edc2-44ea-b4a2-32ee8f6a0d17', 'Buggy ferð', 6000, '3 klst buggy ferð','Vík í Mýrdal',DATE('2022-10-10'), DATETIME('2022-10-10 13:00:00'), DATETIME('2022-10-10 16:00:00'),  17, 1, 5, 'Ævintýraferðir');
-INSERT INTO DAYTRIP VALUES('d9bd1368-df4f-49ce-907a-f2efab6b2fb5', 'Kajak day trip', 10000, '3 hour kajak sailing','Akureyri',DATE('2022-09-20'), DATETIME('2022-09-20 10:00:00'), DATETIME('2022-09-20 13:00:00'),  10, 1, 4, 'Arctic Adventures');
-INSERT INTO DAYTRIP VALUES('afb7a39e-8a86-43c8-af92-7e547f27619c', 'Mountain hike', 9000,'4 hour mountain hike','Akureyri',DATE('2022-09-10'), DATETIME('2022-09-10 14:00:00'), DATETIME('2022-09-10 18:00:00'), 15, 3, 15, 'Arctic Adventures');
-INSERT INTO DAYTRIP VALUES('a9fa50da-2211-4c58-8616-f4dcc43835e6', 'Snorkling', 9000, '4 hour snorkling adventure','Akureyri',DATE('2022-06-08'), DATETIME('2022-06-08 12:00:00'), DATETIME('2022-06-08 16:00:00'),  15, 1, 5, 'Arctic Adventures');
-INSERT INTO DAYTRIP VALUES('2332bd56-9124-479c-89a6-e654a2b0c1ab', 'Golden circle', 11000, '11 hour tour that covers Icelands most visited places','Reykjavík',DATE('2022-11-13'), DATETIME('2022-11-13 09:00:00'), DATETIME('2022-11-13 20:00:00'), 1, 1, 15, 'Iceland Travels');
-INSERT INTO DAYTRIP VALUES('334df690-4edf-4bfa-9926-db57ebab4fa8', 'Northern lights tour', 12000, '3-5 hours, stop at different locations and see the northern light during the night','Reykjavík',DATE('2022-05-25'), DATETIME('2022-05-25 11:00:00'), DATETIME('2022-05-25 16:00:00'), 0, 1, 10, 'Iceland Travels');
-INSERT INTO DAYTRIP VALUES('05ec1500-ba64-41bf-bf1c-3e21fc229bf3', 'Snæfellsnes round trip', 1000, 'Take a round trip around the beautiful Snæfellsnes','Reykjavík',DATE('2022-08-16'), DATETIME('2022-08-16 12:00:00'), DATETIME('2022-08-16 17:00:00'), 0, 1, 5, 'Iceland Travels');
-INSERT INTO DAYTRIP VALUES('76e3aee4-a8e3-4bff-b1d4-d0c89cac6512', 'Waterfall excursion', 8000, '7 hour road trip to see Icelands most visited waterfalls','Akureyri',DATE('2022-07-05'), DATETIME('2022-07-05 09:00:00'), DATETIME('2022-07-05 16:00:00'), 5, 2, 5, 'Iceland Excursions');
-INSERT INTO DAYTRIP VALUES('a129539a-bd76-4059-b478-ec69521aaadb', 'Whale watching ', 7000, '3 hour tour boat tour','Akureyri',DATE('2022-11-23'), DATETIME('2022-11-23 14:00:00'), DATETIME('2022-11-23 17:00:00'), 10, 1, 6, 'Iceland Excursions');
-INSERT INTO DAYTRIP VALUES('58037642-f2f1-4c3c-bae7-f2f2ec660b4d', 'Hot spring tour', 5000, '5 hour road trip to see hotsprings','Akureyri',DATE('2022-08-14'), DATETIME('2022-08-14 15:00:00'), DATETIME('2022-08-14 12:00:00'), 10, 1, 6, 'Iceland Excursions');
-INSERT INTO DAYTRIP VALUES('4368d8ed-6cd3-47fc-9a05-190872bb21ee', 'Volcano hike', 10000, '5 hour walking tour to see Icelands volcanic wonders','Reykjavík',DATE('2022-06-02'), DATETIME('2022-06-02 12:00:00'), DATETIME('2022-06-02 17:00:00'), 10, 4, 10, 'All around tours');
-INSERT INTO DAYTRIP VALUES('92eba69c-d797-4ab9-82a8-afaa705c7a76', 'The Lava Tunnel', 12000, '3 hour adventure and visit the lava tunnel in Raufarhólshellir','Reykjavík',DATE('2022-07-17'), DATETIME('2022-07-17 16:00:00'), DATETIME('2022-07-17 19:00:00'), 10, 4, 6, 'All around tours');
-INSERT INTO DAYTRIP VALUES('34e86ddb-4dbe-4869-b726-a6d0f953d91a', 'Blue Lagoon', 15000, '5 hour trip to the most relaxing lagoon in Iceland','Reykjavík',DATE('2022-08-28'), DATETIME('2022-08-28 17:00:00'), DATETIME('2022-08-28 22:00:00'), 5, 1, 5, 'All around tours');
-INSERT INTO DAYTRIP VALUES('41eb56d5-52f8-407f-8354-bdb4bcbddef2', 'Ice caving', 15000, '3 hour ice cave adventure','Vík í Mýrdal',DATE('2022-11-03'), DATETIME('2022-11-03 16:00:00'), DATETIME('2022-11-03 19:00:00'), 15, 3, 15, 'Country Tours');
-INSERT INTO DAYTRIP VALUES('df3e1fde-55a5-445a-9a8b-b2acbc5bb9ce', 'Paragliding', 20000, '2 hours of adrenaline rush','Vík í Mýrdal',DATE('2022-08-26'), DATETIME('2022-08-26 15:00:00'), DATETIME('2022-08-26 17:00:00'), 18, 2, 4, 'Country Tours');
-INSERT INTO DAYTRIP VALUES('f2167055-02d8-4707-a355-80c3a69e051f', 'Black beach horse riding', 11000, '4 hours of horese back riding on the famous Black beach','Vík í Mýrdal',DATE('2022-06-06'), DATETIME('2022-06-06 16:00:00'), DATETIME('2022-06-06 20:00:00'), 10, 3, 5, 'Country Tours');
+INSERT INTO OPERATOR VALUES('16145a87-a62a-469d-b81b-19c6177b2018', 'Ævintýraferðir', '555-7895', 'Ísafjörður', 1);
+INSERT INTO OPERATOR VALUES('374962ca-e40e-41ae-9e8c-9569070fce02', 'Hvalaskoðunin Ýsa', '565-6363', 'Ísafjörður', 1);
+INSERT INTO OPERATOR VALUES('d87ee834-bf0b-11ec-9d64-0242ac120002', 'Bjarnaferðir', '555-1234', 'Bolungarvík', 1);
+INSERT INTO OPERATOR VALUES('e4c8ce30-b587-4364-aba1-0db5de194aea', 'Icelandic Smoketrips', '589-8989', 'Reykjarfjörður', 1);
+INSERT INTO OPERATOR VALUES('09033b53-2ba7-4132-91d1-ad84b8fea245', 'Country Tours', '500-1234', 'Stykkishólmur', 2);
+INSERT INTO OPERATOR VALUES('5dbf1cd9-1324-43f7-8786-312296c98343', 'Ólafsferðir', '545-8521', 'Ólafsvík', 2);
+INSERT INTO OPERATOR VALUES('8c0fd3fb-b458-4557-a9d1-4bbf2bbac0a5', 'Jöklagarpar ehf.', '565-3434', 'Arnarstapi', 2);
+INSERT INTO OPERATOR VALUES('f4b33e38-8c24-48d3-8662-f6569f222b09', 'Iceland Travels', '521-2630', 'Reykjavík', 3);
+INSERT INTO OPERATOR VALUES('e76ee3f1-8268-45d9-839b-a616bd7ec772', 'All around tours', '555-2345', 'Reykjavík', 3);
+INSERT INTO OPERATOR VALUES('eca85667-415f-443b-ba5f-9f3af534cd89', 'Reykjavik travelling', '577-2775', 'Reykjavík', 3);
+INSERT INTO OPERATOR VALUES('2d6ac083-8bc6-475f-98a5-0eff554bca8b', 'Reykjavik experience', '555-2225', 'Reykjavík', 3);
+INSERT INTO OPERATOR VALUES('388dd631-d881-4e12-be9c-132bb2653d9f', 'Army tours', '555-2345', 'Keflavík', 3);
+INSERT INTO OPERATOR VALUES('f5e8529a-1f45-4d9a-8800-48ebe13cb4ef', 'Northern lights wow', '588-2888', 'Selfoss', 3);
+INSERT INTO OPERATOR VALUES('fed7c855-8225-4c95-bb48-b0957eec3e23', 'Vestmanna-Boat tours', '589-6148', 'Vestmannaeyjar', 4);
+INSERT INTO OPERATOR VALUES('d5e17676-caea-41f0-b6a3-ba5014ddf10d', 'Swing along', '569-6969', 'Vestmannaeyjar', 4);
+INSERT INTO OPERATOR VALUES('6485ea70-8a0d-498f-93c5-e4c86416d155', 'Ferðir Egils', '578-9876', 'Egilsstaðir', 5);
+INSERT INTO OPERATOR VALUES('98db6bcf-4a51-43a2-9b2c-36c102f1b27c', 'Subbuferðir', '545-5454', 'Seyðisfjörður', 5);
+INSERT INTO OPERATOR VALUES('d4ca6968-7334-4695-b44f-d25c867de54a', 'Nestrips', '577-6471', 'Neskaupsstaður', 5);
+INSERT INTO OPERATOR VALUES('365d4028-a8e0-4c8e-86e5-e62720acb793', 'Arctic Adventures', '555-0000', 'Akureyri', 6);
+INSERT INTO OPERATOR VALUES('3f16248c-da08-424b-a12c-e8a216935f5c', 'Iceland Excursions', '567-8910', 'Akureyri', 6);
+INSERT INTO OPERATOR VALUES('19f15af0-5d0c-4bd5-8e76-0e08c4906d6a', 'House tours', '566-6610', 'Húsavík', 6);
+INSERT INTO OPERATOR VALUES('035cfd9f-7f5c-42e6-863e-393f822344d5', 'Smokehill tours', '551-9050', 'Reykjahlíð', 6);

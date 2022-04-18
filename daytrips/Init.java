@@ -3,6 +3,8 @@ package daytrips;
 import java.sql.Connection;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Scanner;
 import java.sql.Statement;
 import java.sql.SQLException;
@@ -29,8 +31,6 @@ public class Init {
             System.err.println(err);
         }
 
-
-        
         try {
             File sql = new File(SQL_PATH);
             if (!sql.exists()) {
@@ -61,8 +61,14 @@ public class Init {
         }
     }
 
+    // public static void insertDaytrips() {
+    //     ArrayList<Operator> o = DayTripController.getOperators(new Hashtable<>());
+
+    //     Hashtable<String, Object> params = new Hashtable<>();
+    //     params.put("")
+    // }
+
     public static void main(String[] args) throws IOException {
         init();
-        DayTripController.getDayTrip();
     }
 }
