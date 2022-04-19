@@ -5,9 +5,14 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.DataHandler;
 
+/**
+ * Email Sender class responsible for sending emails
+ */
 public class EmailSender extends TimerTask {
+    
     private static final String serverEmail = "noreply.daytrips4d@gmail.com";
-    private static final String emailPassword = "mfahcsooecpfgiae";        
+    private static final String emailPassword = "mfahcsooecpfgiae";
+    
     public static void main(String[] args) {
         for (int i = 0; i < 20; i++) {
             System.out.println(i + " = " + UUID.randomUUID().toString());
@@ -19,6 +24,10 @@ public class EmailSender extends TimerTask {
         t.scheduleAtFixedRate(email, new Date(date.getTime() + 24 * 60 * 60 * 1000), 86400000);
     }
 
+    /**
+     * Sends a reminder email a day before the trip is due
+     * @param b Booking which is due the next day
+     */
     private static void sendReminderEmail(Booking b) {
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
@@ -38,7 +47,7 @@ public class EmailSender extends TimerTask {
             MimeMessage message = new MimeMessage(session);
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(b.getClientEmail()));
             message.setSubject("[DayTrip Reminder] One day left!");
-            message.setText("Be ready!\n Tomorrow at "+ dt.getTimeStart()+ 
+            message.setText("Be ready!\n Tomorrow at "+ dt.getTimeStart()+
                     " you are going to " + dt.getName()+"\nWe're excited to see you!");
             Transport.send(message);
         } catch (MessagingException e) {
@@ -46,6 +55,10 @@ public class EmailSender extends TimerTask {
         }
     }
 
+    /**
+     * Sends a confirmationEmail after booking a trip
+     * @param params parameters of the booking
+     */
     public static void sendConfirmationEmail(Hashtable<String, Object> params) {
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
@@ -62,7 +75,7 @@ public class EmailSender extends TimerTask {
             MimeMessage message = new MimeMessage(session);
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(params.get("clientEmail").toString()));
             message.setSubject("[DayTrip Confirmation] Thank you for choosing us!");
-            message.setText("You wont be disappointed!\n You have booked a trip with us for the "+ params.get("date")+ 
+            message.setText("You wont be disappointed!\n You have booked a trip with us for the "+ params.get("date")+
                     "\nWe look forward to see you!");
             Transport.send(message);
         } catch (MessagingException e) {
@@ -70,6 +83,9 @@ public class EmailSender extends TimerTask {
         }
     }
 
+    /**
+     * Cron job executed every day at midnight checking for due Daytrips the following day.
+     */
     @Override
     public void run() {
         ArrayList<Booking> bookings = DayTripController.getBookings(new Hashtable<>());
