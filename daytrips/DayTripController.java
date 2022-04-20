@@ -203,8 +203,8 @@ class DayTripController {
         operators.add(new Operator(
           res.getString("operatorId"),
           res.getString("name"),
-          res.getString("location"),
           res.getString("phoneNo"),
+          res.getString("location"),
           res.getInt("localCode")
         ));
       }
