@@ -11,9 +11,10 @@ Make sure to be in daytrips folder and that you have the sqlite-jdbc-3.36.0.3.ja
 ### How to run Init
 
 From the root folder:
-`javac -cp .:sqlite-jdbc-3.36.0.3.jar:junit-4.13.2.jar daytrips/*.java`
-`java -cp .:sqlite-jdbc-3.36.0.3.jar:junit-4.13.2.jar daytrips/Init`
+MacOs:
+`javac -cp .:sqlite-jdbc-3.36.0.3.jar:junit-4.13.2.jar:javax.mail.jar:activation.jar daytrips/*.java`
+`java -cp .:sqlite-jdbc-3.36.0.3.jar:junit-4.13.2.jar:javax.mail.jar:activation.jar daytrips/Init`
 
 Windows:
-`javac -cp .;sqlite-jdbc-3.36.0.3.jar;junit-4.13.2.jar daytrips/*.java`
-`java -cp .;sqlite-jdbc-3.36.0.3.jar;junit-4.13.2.jar daytrips/Init.java`
+`javac -cp .;sqlite-jdbc-3.36.0.3.jar;junit-4.13.2.jar;javax.mail.jar;activation.jar daytrips/*.java`
+`java -cp .;sqlite-jdbc-3.36.0.3.jar;junit-4.13.2.jar;javax.mail.jar;activation.jar daytrips/Init.java`

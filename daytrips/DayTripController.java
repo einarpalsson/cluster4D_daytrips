@@ -16,14 +16,29 @@ import javax.sql.ConnectionEvent;
 import javax.sql.rowset.CachedRowSet;
 
 class DayTripController {
-  public final static String[] DayTripParams = {"dayTripId", "name", "price", "description", "location", "localCode", "date", "timeStart", "timeEnd", "ageLimit", "difficulty", "capacity", "oId"};
-  public final static String[] BookingParams = {"bookingId", "clientSSN", "clientEmail", "clientPhoneNumber", "clientCount", "date", "isPaid", "dayTripId"};
-  public final static String[] OperatorParams = {"operatorId", "name", "phoneNo", "location", "localCode"};
+  private final static String[] DayTripParams = {"dayTripId", "name", "price", "description", "location", "localCode", "date", "timeStart", "timeEnd", "ageLimit", "difficulty", "capacity", "oId"};
+  private final static String[] BookingParams = {"bookingId", "clientSSN", "clientEmail", "clientPhoneNumber", "clientCount", "date", "isPaid", "dtId"};
+  private final static String[] OperatorParams = {"operatorId", "name", "phoneNo", "location", "localCode"};
+  private final static String[] ReviewParams = {"rating", "review", "date", "clientSSN", "dtId"};
 
-  public static boolean isDateArr(Object value) {
+  /**
+   * Checks if the given object is an array
+   * @param value Boolean
+   * @return
+   */
+  public static boolean isArr(Object value) {
     return value.getClass().isArray();
   }
 
+  /**
+   * Function that takes in parameters from the "frontend" and 
+   * parses the parameters into a SQL query.
+   * @param params Hashtable<String, Object>
+   * @param method String (GET, POST)
+   * @param initalQuery String
+   * @param sqlParams String[] in right order
+   * @return String SQL query
+   */
   public static String queryParser(
     Hashtable<String, Object> params,
     String method,
@@ -45,9 +60,23 @@ class DayTripController {
           Object value = params.get(key);
           if (sqlParams.contains(key)) {
             i++;
-            if (key.contains("date") && isDateArr(value)) {
+            if (key.contains("date") && isArr(value)) {
               LocalDate[] d = (LocalDate[]) value;
-              initalQuery += key + " >= '" + d[0] + "' AND " + key + " <= '" + d[1] + "'";
+              initalQuery += "(" + key + " >= '" + d[0] + "' AND " + key + " <= '" + d[1] + "')";
+              initalQuery += i < keys.size() ? " AND " : ";";
+              continue;
+            }
+
+            if (key.contains("difficulty")) {
+              String [] diff = (String[]) value;
+              int count = 0;
+              initalQuery += "(";
+              for (String v : diff) {
+                initalQuery += key + " = '" + v + "'";
+                initalQuery += count < diff.length-1 ? " OR " : "";
+                count++;
+              }
+              initalQuery += ")";
               initalQuery += i < keys.size() ? " AND " : ";";
               continue;
             }
@@ -66,6 +95,7 @@ class DayTripController {
           i++;
           initalQuery += key;
           values += "?"; 
+          System.out.println("size:" + params.keySet().size() + " AND i: " + i);
 
           if (i < params.keySet().size()) {
             initalQuery += ", ";
@@ -77,15 +107,23 @@ class DayTripController {
 
         return initalQuery;
       case "PATCH":
-        System.out.println("PATCH yay");
+        System.out.println("YE!");
         break;
     }
     return "ves";
   }
 
+  /**
+   * Creates a new daytrip from parameters. Must contain 
+   * all parameters needed for the object that's being created
+   * 
+   * See main() function for examples of usage.
+   * @param params
+   * @return the DayTripId thats generated in the function
+   */
   public static String createDayTrip(Hashtable<String, Object> params) {
     String daytripUUID = UUID.randomUUID().toString();
-    params.put("daytripId", daytripUUID);
+    params.put("dayTripId", daytripUUID);
     ArrayList<String> values = new ArrayList<>();
 
     String query = queryParser(params, "POST", "INSERT INTO DAYTRIP(", Arrays.asList(DayTripParams));
@@ -104,12 +142,22 @@ class DayTripController {
     return daytripUUID;
   }
 
+  /**
+   * Function that fetches DayTrips from the database based
+   * on given parameters and returns them as an ArrayList
+   * of DayTrip objects.
+   * 
+   * Can have zero parameters, than it returns all DayTrips.
+   * 
+   * See main() function for examples of usage.
+   * @param params Hashtable<String, Object>
+   * @return Arraylist of DayTrip Objects.
+   */
   public static ArrayList<DayTrip> getDayTrips(Hashtable<String, Object> params) {
     String q = queryParser(params, "GET", "SELECT * FROM DAYTRIP", Arrays.asList(DayTripParams));
     System.out.println("QUERY ----> " + q);
     CachedRowSet res = Query.query(q);
     ArrayList<DayTrip> daytrips = new ArrayList<DayTrip>();
-    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     try {
       while (res.next()) {
@@ -121,8 +169,8 @@ class DayTripController {
           res.getString("location"),
           res.getInt("localCode"),
           LocalDate.parse(res.getString("date")),
-          LocalDateTime.parse(res.getString("timeStart"), format),
-          LocalDateTime.parse(res.getString("timeEnd"), format),
+          LocalDateTime.parse(res.getString("timeStart")),
+          LocalDateTime.parse(res.getString("timeEnd")),
           res.getInt("ageLimit"),
           res.getString("difficulty"),
           res.getInt("capacity"),
@@ -130,7 +178,7 @@ class DayTripController {
         ));
       }
     } catch (Exception e) {
-      // Ignore
+      System.out.println(e);
     }
 
     return daytrips;
@@ -158,13 +206,27 @@ class DayTripController {
       
     try {
       Query.insert(query, values);
+      Query.insert("UPDATE DAYTRIP SET capacity = capacity - " 
+        + params.get("clientCount").toString() + " WHERE dayTripId = '" 
+        + params.get("dtId").toString() + "';");
     } catch (Exception e) {
       System.out.println(e);
     }
-
+    EmailSender.sendConfirmationEmail(params);
     return bookingUUID;
   }
 
+  /**
+   * Function that fetches Bookings from the database based
+   * on given parameters and returns them as an ArrayList
+   * of Booking objects.
+   * 
+   * Can have zero parameters, than it returns all Bookings.
+   * 
+   * See main() function for examples of usage.
+   * @param params Hashtable<String, Object>
+   * @return Arraylist of Booking Objects.
+   */
   public static ArrayList<Booking> getBookings(Hashtable<String, Object> params) {
     String q = queryParser(params, "GET", "SELECT * FROM BOOKING", Arrays.asList(BookingParams));
     System.out.println(q);
@@ -181,7 +243,7 @@ class DayTripController {
           res.getInt("clientCount"),
           LocalDate.parse(res.getString("date")),
           Boolean.valueOf(res.getString("isPaid")),
-          res.getString("dayTripId")
+          res.getString("dtId")
         );
         bookings.add(b);
       }
@@ -192,9 +254,20 @@ class DayTripController {
     return bookings;
   }
 
+  /**
+   * Function that fetches Operators from the database based
+   * on given parameters and returns them as an ArrayList
+   * of Operator objects.
+   * 
+   * Can have zero parameters, than it returns all Operators.
+   * 
+   * See main() function for examples of usage.
+   * @param params Hashtable<String, Object>
+   * @return Arraylist of Operator Objects.
+   */
   public static ArrayList<Operator> getOperators(Hashtable<String, Object> params) {
     String q = queryParser(params, "GET", "SELECT * FROM OPERATOR", Arrays.asList(OperatorParams));
-    System.out.println("QUERY ----> " + q);
+    // System.out.println("QUERY ----> " + q);
     CachedRowSet res = Query.query(q);
     ArrayList<Operator> operators = new ArrayList<Operator>();
 
@@ -215,25 +288,105 @@ class DayTripController {
     return operators;
   }
 
+  /**
+   * Function that fetches Reviews from the database based
+   * on given parameters and returns them as an ArrayList
+   * of Review objects.
+   * 
+   * Can have zero parameters, than it returns all Reviews.
+   * 
+   * See main() function for examples of usage.
+   * @param params Hashtable<String, Object>
+   * @return Arraylist of Review Objects.
+   */
+  public static ArrayList<Review> getReviews(Hashtable<String, Object> params) {
+    String q = queryParser(params, "GET", "SELECT * FROM REVIEW", Arrays.asList(ReviewParams));
+    // System.out.println("QUERY ----> " + q);
+    CachedRowSet res = Query.query(q);
+    ArrayList<Review> reviews = new ArrayList<Review>();
+
+    try {
+      while (res.next()) {
+        reviews.add(new Review(
+          res.getInt("rating"),
+          res.getString("review"),
+          LocalDate.parse(res.getString("date")),
+          res.getString("clientSSN"),
+          res.getString("dayTripId")
+        ));
+      }
+    } catch (Exception e) {
+      System.out.println("getReviews......!");
+      System.out.println(e);
+    }
+
+    return reviews;
+  }
+
+  /**
+   * Creates a new review from parameters. Must contain 
+   * all parameters needed for the object that's being created
+   * Must contain all the information, most importantly 
+   * a clientSSN that already exists in the database and a daytripID
+   * 
+   * See main() function for examples of usage.
+   * @param params
+   */
+  public static void insertReview(Hashtable<String, Object> params) {
+    params.put("date", LocalDate.now().toString());
+    ArrayList<String> values = new ArrayList<>();
+    String query = queryParser(params, "POST", "INSERT INTO REVIEW(", Arrays.asList(ReviewParams));
+
+    for (String a: ReviewParams) {
+      values.add(params.get(a).toString());
+    }
+      
+    try {
+      Query.insert(query, values);
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+  }
+
   public static void main(String[] args) {
+    // Búum til DayTrip
+    Hashtable<String, Object> dtParams = new Hashtable<>();
+    dtParams.put("name", "Sviðasultusmakk");
+    dtParams.put("price", 6500);
+    dtParams.put("description", "Förum á milli bæja, skoðum dýrin og smökkum sviðasultu.");
+    dtParams.put("location", "Neskaupsstaður");
+    dtParams.put("localCode", 5);
+    dtParams.put("date", LocalDate.of(2022, 5, 10));
+    dtParams.put("timeStart", LocalDateTime.of(2022, 5, 10, 13, 00));
+    dtParams.put("timeEnd", LocalDateTime.of(2022, 5, 10, 18, 00));
+    dtParams.put("ageLimit", 15);
+    dtParams.put("difficulty", "Medium");
+    dtParams.put("capacity", 15);
+    dtParams.put("oId", "2a93cc1f-0b98-4110-95d2-b815667c8431");
+    String testDayTripId = createDayTrip(dtParams);
+
     /* ---------------------------------------- */
     /* ----------- getDayTrips TEST ----------- */
     Hashtable<String, Object> getDayTripsParams = new Hashtable<>();
-    LocalDate[] dates = {LocalDate.of(2022, 5, 1), LocalDate.of(2022, 6, 3)};
-    // getDayTripsParams.put("Difficulty", 2);
+    LocalDate[] dates = {LocalDate.of(2022, 5, 1), LocalDate.of(2022, 5, 3)};
     getDayTripsParams.put("date", dates);
-    // getDayTripsParams.put("Date", d1);
-    getDayTrips(getDayTripsParams);
+    String[] arr = {"Easy", "Medium"};
+    getDayTripsParams.put("difficulty", arr);
+    ArrayList<DayTrip> dts = getDayTrips(getDayTripsParams);
+    System.out.println("Daytrips size: " + dts.size());
+    for (DayTrip d : dts) {
+      System.out.println(d.getName() + " || " + d.getDifficulty());
+    }
 
     // /* ---------------------------------------- */
     // /* ----------- bookDayTrip TEST ----------- */
     Hashtable<String, Object> bookDayTripParams = new Hashtable<>();
     bookDayTripParams.put("clientSSN", "300321-2240");
-    bookDayTripParams.put("clientEmail", "frosti@iceman.is");
+    bookDayTripParams.put("clientEmail", "oberen@inspauvila.cat");
     bookDayTripParams.put("clientPhoneNumber", "000-0000");
     bookDayTripParams.put("clientCount", 3);
     bookDayTripParams.put("isPaid", true);
-    bookDayTripParams.put("dayTripId", "f2167055-02d8-4707-a355-80c3a69e051f");
+    bookDayTripParams.put("dtId", testDayTripId);
     bookDayTrip(bookDayTripParams);
 
     /* ---------------------------------------- */
@@ -260,7 +413,27 @@ class DayTripController {
       );
     }
 
-    ArrayList<Operator> ops = getOperators(new Hashtable<>());
-    System.out.println(ops.size());
+    /* ---------------------------------------- */
+    /* ----------- getReviews TEST ----------- */
+    ArrayList<Review> reviews = getReviews(new Hashtable<>());
+    Hashtable<String, Object> testReview = new Hashtable<>();
+    testReview.put("rating", 5);
+    testReview.put("review", "Þetta var besti smókur sem ég hef á ævinni prófað.  Samt smá vont í hálsinn. Fimm stjörnur!");
+    testReview.put("date", LocalDate.now());
+    testReview.put("clientSSN", "300321-2240");
+    testReview.put("dtId", testDayTripId);
+    insertReview(testReview);
+    for (Review r : reviews) {
+      System.out.println(
+        r.getRating() + " ||| " + 
+        r.getReview() + " ||| " + 
+        r.getDate().toString() + " ||| " + 
+        r.getClientSSN() + " ||| " +
+        r.getDayTripId()
+      );
+    }
+
+    // ArrayList<Operator> ops = getOperators(new Hashtable<>());
+    // System.out.println(ops.size());
   }
 }
