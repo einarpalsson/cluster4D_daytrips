@@ -346,6 +346,7 @@ class DayTripController {
     /* ---------------------------------------- */
     /* --------- createDayTrip TEST ----------- */
     System.out.println("Búum til DayTrip með parameterana:");
+    System.out.println();
     System.out.println("name: " + "Sviðasultusmakk");
     System.out.println("price: " + 6500);
     System.out.println("description: " + "Förum á milli bæja,skoðum dýrin og smökkum sviðasultu.");
@@ -358,6 +359,8 @@ class DayTripController {
     System.out.println("difficulty: " + "Medium");
     System.out.println("capacity: " + 15);
     System.out.println("oId: " + "2a93cc1f-0b98-4110-95d2-b815667c8431");
+    System.out.println();
+    
     Hashtable<String, Object> dtParams = new Hashtable<>();
     dtParams.put("name", "Sviðasultusmakk");
     dtParams.put("price", 6500);
@@ -395,9 +398,12 @@ class DayTripController {
     getDayTripsParams.put("difficulty", arr);
     ArrayList<DayTrip> dts = getDayTrips(getDayTripsParams);
     System.out.println("Hér er test þar sem sótt eru öll Daytrips með parameterana:");
+    System.out.println();
     System.out.println("difficulty: {\"Medium\", \"Easy\"}");
     System.out.println("date: {\"2022-05-01\", \"2022-05-02\"}");
     System.out.println("localCode = 2");
+    System.out.println();
+
     System.out.println("Fáum:");
     for (DayTrip d : dts) {
       System.out.println("Nafn: " + d.getName() + " ||| Verð: " + d.getPrice() + " ||| Staðsetning: " + d.getLocation());
@@ -407,9 +413,19 @@ class DayTripController {
     // /* ---------------------------------------- */
     // /* ----------- bookDayTrip TEST ----------- */
     // Bókum daytrip, nóg að hafa þessa parametera, bookDayTrip() sér um rest.
+    System.out.println("Hér er bókun búin til með parameterum:");
+    System.out.println();
+    System.out.println("clientSSN: " + "300321-2240");
+    System.out.println("clientEmail: " + "EHVEMAIL@GMAIL.COM + | <----- Hér er hægt að setja alvöru email til að prófa EmailSender function");
+    System.out.println("clientPhoneNumber: " + "000-0000");
+    System.out.println("clientCount: " + 3);
+    System.out.println("isPaid: " + true);
+    System.out.println("dtId: " + testDayTripId);
+    System.out.println();
+    
     Hashtable<String, Object> bookDayTripParams = new Hashtable<>();
     bookDayTripParams.put("clientSSN", "300321-2240");
-    bookDayTripParams.put("clientEmail", "oberen@inspauvila.cat");
+    bookDayTripParams.put("clientEmail", "EHVEMAIL@GMAIL.COM");
     bookDayTripParams.put("clientPhoneNumber", "000-0000");
     bookDayTripParams.put("clientCount", 3);
     bookDayTripParams.put("isPaid", true);
@@ -422,6 +438,7 @@ class DayTripController {
     Hashtable<String, Object> bookdttest = new Hashtable<>();
     bookdttest.put("bookingId", testBookDt);
     ArrayList<Booking> bkngs =  getBookings(bookdttest);
+    System.out.println("Sækjum svo bókunina með gefnu bookingId, einnig hægt með kennitölu");
     for (Booking b : bkngs) {
       System.out.println("Email: " + b.getClientEmail() + " ||| Kennitala: " + b.getClientSSN() + " ||| Búið að borga: " + b.isPaid());
     }
