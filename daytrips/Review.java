@@ -8,20 +8,20 @@ public class Review {
   private String review;
   private LocalDate date;
   private String clientSSN;
-  private String dayTripId;
+  private String dtId;
 
   public Review(
     int rating,
     String review,
     LocalDate date,
     String clientSSN,
-    String dayTripId
+    String dtId
   ) {
     this.rating = rating;
     this.review = review;
     this.date = date;
     this.clientSSN = clientSSN;
-    this.dayTripId = dayTripId;
+    this.dtId = dtId;
   }
 
   public int getRating() {
@@ -41,6 +41,6 @@ public class Review {
   }
 
   public String getDayTripId() {
-    return this.dayTripId;
+    return this.dtId;
   }
 }

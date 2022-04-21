@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.UUID;
 import java.sql.Statement;
@@ -53,7 +54,7 @@ public class Init {
             Connection connection = DriverManager.getConnection(connectionUrl);
             Statement statement = connection.createStatement();
 
-            Scanner read = new Scanner(sql);
+            Scanner read = new Scanner(sql, "utf-8");
             read.useDelimiter(";");
 
             while (read.hasNext()) {

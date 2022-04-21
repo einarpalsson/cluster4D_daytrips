@@ -95,7 +95,6 @@ class DayTripController {
           i++;
           initalQuery += key;
           values += "?"; 
-          System.out.println("size:" + params.keySet().size() + " AND i: " + i);
 
           if (i < params.keySet().size()) {
             initalQuery += ", ";
@@ -106,9 +105,6 @@ class DayTripController {
         }
 
         return initalQuery;
-      case "PATCH":
-        System.out.println("YE!");
-        break;
     }
     return "ves";
   }
@@ -127,7 +123,6 @@ class DayTripController {
     ArrayList<String> values = new ArrayList<>();
 
     String query = queryParser(params, "POST", "INSERT INTO DAYTRIP(", Arrays.asList(DayTripParams));
-    System.out.println(query);
 
     for (String a: DayTripParams) {
       values.add(params.get(a).toString());
@@ -155,7 +150,6 @@ class DayTripController {
    */
   public static ArrayList<DayTrip> getDayTrips(Hashtable<String, Object> params) {
     String q = queryParser(params, "GET", "SELECT * FROM DAYTRIP", Arrays.asList(DayTripParams));
-    System.out.println("QUERY ----> " + q);
     CachedRowSet res = Query.query(q);
     ArrayList<DayTrip> daytrips = new ArrayList<DayTrip>();
 
@@ -198,7 +192,6 @@ class DayTripController {
     ArrayList<String> values = new ArrayList<>();
 
     String query = queryParser(params, "POST", "INSERT INTO BOOKING(", Arrays.asList(BookingParams));
-    System.out.println(query);
 
     for (String a: BookingParams) {
       values.add(params.get(a).toString());
@@ -229,7 +222,6 @@ class DayTripController {
    */
   public static ArrayList<Booking> getBookings(Hashtable<String, Object> params) {
     String q = queryParser(params, "GET", "SELECT * FROM BOOKING", Arrays.asList(BookingParams));
-    System.out.println(q);
     CachedRowSet res = Query.query(q);
     ArrayList<Booking> bookings = new ArrayList<Booking>();
 
@@ -248,7 +240,7 @@ class DayTripController {
         bookings.add(b);
       }
     } catch (Exception e) {
-      // Ignore
+      System.out.println(e);
     }
 
     return bookings;
@@ -267,7 +259,6 @@ class DayTripController {
    */
   public static ArrayList<Operator> getOperators(Hashtable<String, Object> params) {
     String q = queryParser(params, "GET", "SELECT * FROM OPERATOR", Arrays.asList(OperatorParams));
-    // System.out.println("QUERY ----> " + q);
     CachedRowSet res = Query.query(q);
     ArrayList<Operator> operators = new ArrayList<Operator>();
 
@@ -282,7 +273,7 @@ class DayTripController {
         ));
       }
     } catch (Exception e) {
-      // Ignore
+      System.out.println(e);
     }
 
     return operators;
@@ -301,7 +292,6 @@ class DayTripController {
    */
   public static ArrayList<Review> getReviews(Hashtable<String, Object> params) {
     String q = queryParser(params, "GET", "SELECT * FROM REVIEW", Arrays.asList(ReviewParams));
-    // System.out.println("QUERY ----> " + q);
     CachedRowSet res = Query.query(q);
     ArrayList<Review> reviews = new ArrayList<Review>();
 
@@ -312,11 +302,10 @@ class DayTripController {
           res.getString("review"),
           LocalDate.parse(res.getString("date")),
           res.getString("clientSSN"),
-          res.getString("dayTripId")
+          res.getString("dtId")
         ));
       }
     } catch (Exception e) {
-      System.out.println("getReviews......!");
       System.out.println(e);
     }
 
@@ -349,7 +338,26 @@ class DayTripController {
   }
 
   public static void main(String[] args) {
-    // Búum til DayTrip
+    System.out.println("Framundan eru ýmiss konar test sem sýnir hvernig DayTrip bakendinn virkar");
+    System.out.println("Það má breyta út frá parameterum ef þú vilt prófa aðra parametera o.s.frv");
+    System.out.println("Alla parametera fyrir klasana má finna efst í þessu skjali");
+    System.out.println("\n------------------------------------------------------------------\n");
+
+    /* ---------------------------------------- */
+    /* --------- createDayTrip TEST ----------- */
+    System.out.println("Búum til DayTrip með parameterana:");
+    System.out.println("name: " + "Sviðasultusmakk");
+    System.out.println("price: " + 6500);
+    System.out.println("description: " + "Förum á milli bæja,skoðum dýrin og smökkum sviðasultu.");
+    System.out.println("location: " + "Neskaupsstaður");
+    System.out.println("localCode: " + 5);
+    System.out.println("date: " + "\"2022-05-10\"");
+    System.out.println("timeStart: " + "\"2022-05-10-13-00\"");
+    System.out.println("timeEnd: " + "\"2022-05-10-18-00\"");
+    System.out.println("ageLimit: " + 15);
+    System.out.println("difficulty: " + "Medium");
+    System.out.println("capacity: " + 15);
+    System.out.println("oId: " + "2a93cc1f-0b98-4110-95d2-b815667c8431");
     Hashtable<String, Object> dtParams = new Hashtable<>();
     dtParams.put("name", "Sviðasultusmakk");
     dtParams.put("price", 6500);
@@ -365,21 +373,40 @@ class DayTripController {
     dtParams.put("oId", "2a93cc1f-0b98-4110-95d2-b815667c8431");
     String testDayTripId = createDayTrip(dtParams);
 
+    // Sækjum Daytrip sem við bjuggum til
+    Hashtable<String, Object> ourDtParams = new Hashtable<>();
+    ourDtParams.put("dayTripId", testDayTripId);
+    ArrayList<DayTrip> ourDt = getDayTrips(ourDtParams);
+    System.out.println("Fáum dayTripId = " + testDayTripId);
+    System.out.println("Köllum á getDayTrips með því sem parameter og fáum það daytrip:");
+    for (DayTrip d : ourDt) {
+      System.out.println("Nafn: " + d.getName() + " ||| Verð: " + d.getPrice() + " ||| Staðsetning: " + d.getLocation());
+    }
+    System.out.println("\n------------------------------------------------------------------\n");
+
     /* ---------------------------------------- */
     /* ----------- getDayTrips TEST ----------- */
+    // Sækjum DayTrip með einhverjum parameterum
     Hashtable<String, Object> getDayTripsParams = new Hashtable<>();
-    LocalDate[] dates = {LocalDate.of(2022, 5, 1), LocalDate.of(2022, 5, 3)};
+    LocalDate[] dates = {LocalDate.of(2022, 5, 1), LocalDate.of(2022, 5, 2)};
+    String[] arr = {"Medium", "Easy"};
+    getDayTripsParams.put("localCode", 2);
     getDayTripsParams.put("date", dates);
-    String[] arr = {"Easy", "Medium"};
     getDayTripsParams.put("difficulty", arr);
     ArrayList<DayTrip> dts = getDayTrips(getDayTripsParams);
-    System.out.println("Daytrips size: " + dts.size());
+    System.out.println("Hér er test þar sem sótt eru öll Daytrips með parameterana:");
+    System.out.println("difficulty: {\"Medium\", \"Easy\"}");
+    System.out.println("date: {\"2022-05-01\", \"2022-05-02\"}");
+    System.out.println("localCode = 2");
+    System.out.println("Fáum:");
     for (DayTrip d : dts) {
-      System.out.println(d.getName() + " || " + d.getDifficulty());
+      System.out.println("Nafn: " + d.getName() + " ||| Verð: " + d.getPrice() + " ||| Staðsetning: " + d.getLocation());
     }
+    System.out.println("\n------------------------------------------------------------------\n");
 
     // /* ---------------------------------------- */
     // /* ----------- bookDayTrip TEST ----------- */
+    // Bókum daytrip, nóg að hafa þessa parametera, bookDayTrip() sér um rest.
     Hashtable<String, Object> bookDayTripParams = new Hashtable<>();
     bookDayTripParams.put("clientSSN", "300321-2240");
     bookDayTripParams.put("clientEmail", "oberen@inspauvila.cat");
@@ -387,42 +414,52 @@ class DayTripController {
     bookDayTripParams.put("clientCount", 3);
     bookDayTripParams.put("isPaid", true);
     bookDayTripParams.put("dtId", testDayTripId);
-    bookDayTrip(bookDayTripParams);
+    String testBookDt = bookDayTrip(bookDayTripParams);
+    System.out.println("Fáum bookingId = " + testBookDt);
+
+    // Sækjum bókunina út frá því ID sem við fengum
+    // Einnig hægt að sækja út frá kennitölu viðkomandi.
+    Hashtable<String, Object> bookdttest = new Hashtable<>();
+    bookdttest.put("bookingId", testBookDt);
+    ArrayList<Booking> bkngs =  getBookings(bookdttest);
+    for (Booking b : bkngs) {
+      System.out.println("Email: " + b.getClientEmail() + " ||| Kennitala: " + b.getClientSSN() + " ||| Búið að borga: " + b.isPaid());
+    }
+    System.out.println("\n------------------------------------------------------------------\n");
 
     /* ---------------------------------------- */
     /* ----------- getBookings TEST ----------- */
+    System.out.println("Hér er test þar sem sótt eru öll Bookings án parametera:");
     ArrayList<Booking> bookings = getBookings(new Hashtable<>());
     for (Booking b : bookings) {
-      String bookingId = b.getBookingId();
-      String clientSSN = b.getClientSSN();
-      String clientEmail = b.getClientEmail();
-      String clientPhoneNumber = b.getClientPhoneNumber();
-      int clientCount = b.getClientCount();
-      String date = b.getDate().toString();
-      String isPaid = String.valueOf(b.isPaid());
-      String dayTripId = b.getDate().toString();
       System.out.println(
-        bookingId + " ||| " + 
-        clientSSN + " ||| " + 
-        clientEmail + " ||| " + 
-        clientPhoneNumber + " ||| " +
-        clientCount + " ||| " +
-        date + " ||| " +
-        isPaid + " ||| " +
-        dayTripId
+        b.getClientSSN() + " ||| " + 
+        b.getClientEmail() + " ||| " + 
+        b.getClientPhoneNumber() + " ||| " +
+        b.getClientCount() + " ||| " +
+        b.getDate().toString() + " ||| " +
+        b.isPaid() + " ||| " +
+        b.getDayTripId()
       );
     }
+    System.out.println("\n------------------------------------------------------------------\n");
 
     /* ---------------------------------------- */
-    /* ----------- getReviews TEST ----------- */
-    ArrayList<Review> reviews = getReviews(new Hashtable<>());
+    /* ------------- Review TEST -------------- */
+    // Búum til Review á daytrip sem við bókuðum hér að ofan
     Hashtable<String, Object> testReview = new Hashtable<>();
     testReview.put("rating", 5);
-    testReview.put("review", "Þetta var besti smókur sem ég hef á ævinni prófað.  Samt smá vont í hálsinn. Fimm stjörnur!");
+    testReview.put("review", "Þetta var besta Sviðasulta sem ég hef á ævinni prófað.  Samt smá vont í hálsinn. Fimm stjörnur!");
     testReview.put("date", LocalDate.now());
     testReview.put("clientSSN", "300321-2240");
     testReview.put("dtId", testDayTripId);
     insertReview(testReview);
+    System.out.println("Hér er engu skilað þegar review er búið til");
+    System.out.println("Því sækjum við review út frá kennitölu notanda");
+    System.out.println("Einnig hægt að sækja út frá dayTripId");
+    Hashtable<String, Object> revParams = new Hashtable<>();
+    revParams.put("clientSSN", "300321-2240");
+    ArrayList<Review> reviews = getReviews(revParams);
     for (Review r : reviews) {
       System.out.println(
         r.getRating() + " ||| " + 
@@ -432,8 +469,6 @@ class DayTripController {
         r.getDayTripId()
       );
     }
-
-    // ArrayList<Operator> ops = getOperators(new Hashtable<>());
-    // System.out.println(ops.size());
+    System.out.println("\n------------------------------------------------------------------\n");
   }
 }
